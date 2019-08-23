@@ -33,7 +33,7 @@ namespace Sojourner.Services
             var query=from o in database.GetCollection<Order>(settings.OrderCollectionName).AsQueryable()
                     where Int32.Parse(o.startDate)<ed||Int32.Parse(o.endDate)>sd
                     select o.hId;
-            var short=_houses.Find<House>(s=>!query.Contains(s.id));
+            return _houses.Find(s=>!query.Contains(s.id)).ToList<House>();
         }
         public bool insertHouse(House tar){
             _houses.InsertOne(tar);
