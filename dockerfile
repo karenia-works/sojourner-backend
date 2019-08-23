@@ -8,4 +8,4 @@ FROM microsoft/dotnet:2.2-runtime as runtime
 ENV ASPNETCORE_URLS http://+:80
 WORKDIR /app
 COPY --from=build /app/bin/sojourner ./
-ENTRYPOINT ["dotnet", "sijourner_backend.dll"]
+ENTRYPOINT ["dotnet", "sojourner_backend.dll"]
