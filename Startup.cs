@@ -13,7 +13,6 @@ using Microsoft.Extensions.Options;
 
 using Sojourner.Models;
 using Sojourner.Models.Settings;
-
 namespace Sojourner
 {
     public class Startup
@@ -28,6 +27,11 @@ namespace Sojourner
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<DbSettings>(
+                Configuration.GetSection(nameof(DbSettings)));  
+            services.AddSingleton<IDbSettings>(sp=>
+            sp.GetRequiredService<IOptions<DbSettings>>().Value);
+            
             services.AddMvc()
                 .AddJsonOptions(options => options.UseCamelCasing(false))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
