@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2 as build
+FROM microsoft/dotnet:2.2-sdk as build
 WORKDIR /app
 COPY sojourner_backend.csproj sojourner/
-WORKDIR sojourner/
+WORKDIR /app/sojourner/
 RUN dotnet publish -c Release -v m -o ./bin/sojourner
 
 FROM microsoft/dotnet:2.2-runtime as runtime
