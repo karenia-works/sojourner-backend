@@ -19,12 +19,7 @@ namespace Sojourner.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-           var order=new Order();
-           order.hId="s";
-           order.startDate="d";
-           order.endDate="f";
-           order.uId="g";
-           _orderService.insertOrder(order);
+           
             return new string[] { "value1", "value2" };
         }
 

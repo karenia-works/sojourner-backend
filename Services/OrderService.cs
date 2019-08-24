@@ -23,5 +23,16 @@ namespace back.Services
             Select(o=>o);
             return query.ToList();
         } 
+        public List<Order> findHouseOrder(string hid){
+            var query=_orders.AsQueryable().
+            Where(o=>o.hId==hid).
+            Select(o=>o);
+            return query.ToList();
+        }
+        public Order findOrder(string id){
+            var query=_orders.AsQueryable().
+            Where(o=>o.id==id).First();
+            return query;
+        }
     }
 }

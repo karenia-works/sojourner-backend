@@ -33,6 +33,7 @@ namespace Sojourner
             services.AddSingleton<IDbSettings>(sp=>
             sp.GetRequiredService<IOptions<DbSettings>>().Value);
             
+            
             services.AddSingleton<OrderService>();
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
