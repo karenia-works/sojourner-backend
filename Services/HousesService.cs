@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Sojourner.Models.Settings;
 using Sojourner.Models;
 using MongoDB.Driver;
@@ -43,7 +44,7 @@ namespace Sojourner.Services
             //change later
             var query = from o in database.GetCollection<Order>(settings.OrderCollectionName).AsQueryable()
                         where o.startDate < ed || o.endDate > sd
-                        select o.hId;
+                        select o.houseId;
             return _houses.Find(s => s.longAvailable == false && !query.Contains(s.id)).ToList<House>();
         }
         // public IMongoQueryable<House> takeAvailableAll(String startDate, String endDate)
@@ -56,19 +57,60 @@ namespace Sojourner.Services
         //      _houses.Find(s => s.longAvailable || !query.Any(item => item == s.id));
         // }
 
-        public IMongoQueryable<House> searchForHouse(
-            DateTime startTime, DateTime endTime, IList<string> keywords, ISet<string> houseType,
+        public Task<List<House>> searchForHouse(
+            DateTime startTime, DateTime endTime, IEnumerable<string> keywords, IEnumerable<string> houseType,
             int limit, int skip
         )
         {
+            const string _ordersName = "orders";
+            var aggregate = _houses.Aggregate(
+                PipelineDefinition<House, House>.Create(
+                    new BsonDocument[]
+                    {
+                        new BsonDocument("$match", new BsonDocument(
+                            new List<BsonElement>(){
+                                new BsonElement("name",
+                                    new BsonRegularExpression(string.Join('|', keywords), "i")
+                                ),
+                                new BsonElement("longAvailable", true),
+                                new BsonElement("houseType",
+                                    new BsonDocument("$in", new BsonArray(houseType))
+                                )
+                            }
+                        )),
+                        new BsonDocument("$lookup",
+                            new BsonDocument(
+                            new List<BsonElement>(){
+                                new BsonElement("from", settings.OrderCollectionName),
+                                new BsonElement("localField", "_id"),
+                                new BsonElement("foreignField", "houseId"),
+                                new BsonElement("as", _ordersName)
+                            })
+                        ),
+                        new BsonDocument(
+                            "$match",
+                            new BsonDocument(_ordersName,
+                                new BsonDocument(
+                                    "$not",
+                                    new BsonDocument("$elemMatch",
+                                        new BsonDocument(
+                                        new List<BsonElement>{
+                                            new BsonElement("startDate", new BsonDocument("$lt", endTime)),
+                                            new BsonElement("endDate", new BsonDocument("$gt", startTime))
+                                        }
+                                        )
+                                    )
+                                )
+                            )
+                        ),
+                        new BsonDocument("$project", new BsonDocument("orders", false)),
+                        new BsonDocument("$skip", skip),
+                        new BsonDocument("$limit", limit)
+                    }
+                )
+            );
 
-
-            return this._houses.AsQueryable().Where(house => houseType.Contains(house.houseType)).GroupJoin(
-                database.GetCollection<Order>(settings.OrderCollectionName).AsQueryable(),
-                house => house.id,
-                (Order order) => order.hId,
-                (house, orders) => new OrderedHouse(house, orders)
-            ).Where(h => h.orders.Any()).Select(obj => (House)obj);
+            return aggregate.ToListAsync();
         }
 
         public bool insertHouse(House tar)
@@ -76,10 +118,9 @@ namespace Sojourner.Services
             _houses.InsertOne(tar);
             return true;
         }
-        public bool insertHouseMany(List<House> tars)
+        public Task insertHouseManyAsync(List<House> tars)
         {
-            _houses.InsertMany(tars);
-            return true;
+            return _houses.InsertManyAsync(tars);
         }
     }
 }

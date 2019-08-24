@@ -22,14 +22,14 @@ namespace Sojourner.Services
         public List<Order> findUserOrder(string uid)
         {
             var query = _orders.AsQueryable().
-            Where(o => o.uId == uid).
+            Where(o => o.userId == uid).
             Select(o => o);
             return query.ToList();
         }
         public List<Order> findHouseOrder(string hid)
         {
             var query = _orders.AsQueryable().
-            Where(o => o.hId == hid).
+            Where(o => o.houseId == hid).
             Select(o => o);
             return query.ToList();
         }

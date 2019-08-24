@@ -9,8 +9,8 @@ namespace Sojourner.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string id { get; set; }
-        public string hId { get; set; }
-        public string uId { get; set; }
+        public string houseId { get; set; }
+        public string userId { get; set; }
         public DateTime startDate { get; set; }
         public DateTime endDate { get; set; }
         public bool isLongRent { get; set; }
