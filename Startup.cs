@@ -10,8 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using back.Services;
-using back.Models;
+using Sojourner.Services;
+using Sojourner.Models;
 using Sojourner.Models;
 using Sojourner.Services;
 using Sojourner.Models.Settings;
@@ -31,25 +31,27 @@ namespace Sojourner
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<DbSettings>(
-                Configuration.GetSection(nameof(DbSettings)));  
-            services.AddSingleton<IDbSettings>(sp=>
+                Configuration.GetSection(nameof(DbSettings)));
+            services.AddSingleton<IDbSettings>(sp =>
             sp.GetRequiredService<IOptions<DbSettings>>().Value);
             //services.AddIdentityServer();
+            services.AddRouting();
             services.AddSingleton<OrderService>();
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
-            services.AddMvc()
-                .AddJsonOptions(options => options.UseCamelCasing(false))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc();
+            // services.AddControllers();
+            //     .AddJsonOptions(options => options.UseCamelCasing(false))
+            //     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));
             services.AddSingleton<IDbSettings>(settings => settings.GetRequiredService<IOptions<DbSettings>>().Value);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.EnvironmentName == "development")
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -59,9 +61,14 @@ namespace Sojourner
                 app.UseHsts();
             }
             //app.UseIdentityServer();
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseMvc();
 
+
+            app.UseCors();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
         }
     }
