@@ -10,8 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
+using back.Services;
 using Sojourner.Models;
+using Sojourner.Services;
 using Sojourner.Models.Settings;
 namespace Sojourner
 {
@@ -32,6 +33,9 @@ namespace Sojourner
             services.AddSingleton<IDbSettings>(sp=>
             sp.GetRequiredService<IOptions<DbSettings>>().Value);
             
+            services.AddSingleton<OrderService>();
+            services.AddSingleton<UserService>();
+            services.AddSingleton<HousesService>();
             services.AddMvc()
                 .AddJsonOptions(options => options.UseCamelCasing(false))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
