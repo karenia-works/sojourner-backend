@@ -1,10 +1,13 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Sojourner.Services;
-using back.Models;
+using Sojourner.Models;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-namespace back.Controllers
+using System.Threading.Tasks;
+
+namespace Sojourner.Controllers
 {
 
     [Route("api/v1/[controller]")]
@@ -16,7 +19,8 @@ namespace back.Controllers
         {
             _housesService = housesService;
         }
-        [HttpGet("/{id}")]
+
+        [HttpGet("/{id:regex([[0-9a-fA-F]]{{24}})}")]
         public House getHouseId(string id)
         {
             var res = _housesService.getHouseId(id);
@@ -33,15 +37,46 @@ namespace back.Controllers
         //     return res;
         // }
         [HttpGet()]
-        public List<House> kwHouses(string kw = "", string room_type = "any", string start_date = "any",
-         string end_date = "any", int limit = 20, int skip = 0)
+        public async Task<List<House>> kwHouses(string kw = "", string room_type = "", string start_date = "2000-1-1",
+         string end_date = "2099-12-31", int limit = 20, int skip = 0)
         {
-            var query_res = _housesService.takeAvailableAll(start_date, end_date);
-            var match_res = room_type.Split('|');
-            Regex regex = new Regex(@"(" + kw + @")+");
-            var res = query_res.Where(h => match_res.Contains(h.houseType) && regex.IsMatch(h.name)).
-            Take(limit).Skip(skip);
-            return res.ToList();
+            var startTime = DateTime.Parse(start_date);
+            var endTime = DateTime.Parse(end_date);
+            var res = await _housesService.searchForHouse(startTime, endTime, kw.Split(' '), room_type.Split(' '), limit, skip);
+
+            return res;
+        }
+
+        [HttpGet("debug/insert")]
+        public async Task<string> InsertHouses()
+        {
+            await _housesService.insertHouseManyAsync(
+                new List<House>()
+                {
+                    new House(){
+                        id = MongoDB.Bson.ObjectId.GenerateNewId().ToString(),
+                        name = "Sample House 1",
+                        description = "This is a sample house from a test database",
+                        houseType = "single",
+                        longAvailable = true,
+                    },
+                    new House(){
+                        id = MongoDB.Bson.ObjectId.GenerateNewId().ToString(),
+                        name = "Astronaut Beachhouse",
+                        description = "This is a sample house from a test database",
+                        houseType = "quad",
+                        longAvailable = true,
+                    },
+                    new House(){
+                        id = MongoDB.Bson.ObjectId.GenerateNewId().ToString(),
+                        name = "International Space Station",
+                        description = "This is a sample house from a test database",
+                        houseType = "single",
+                        longAvailable = true,
+                    }
+                }
+            );
+            return "Yay!";
         }
     }
 }
