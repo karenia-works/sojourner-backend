@@ -12,6 +12,7 @@ namespace back.Models
         public string uId { get; set;}
         public string startDate { get; set;}
         public string endDate { get; set;}
+        public bool isLongRent { get; set;}
 
 
     }

@@ -11,9 +11,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using back.Services;
+using back.Models;
 using Sojourner.Models;
 using Sojourner.Services;
 using Sojourner.Models.Settings;
+using IdentityServer4.AspNetIdentity;
 namespace Sojourner
 {
     public class Startup
@@ -32,8 +34,7 @@ namespace Sojourner
                 Configuration.GetSection(nameof(DbSettings)));  
             services.AddSingleton<IDbSettings>(sp=>
             sp.GetRequiredService<IOptions<DbSettings>>().Value);
-            
-            
+            //services.AddIdentityServer();
             services.AddSingleton<OrderService>();
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
@@ -57,7 +58,7 @@ namespace Sojourner
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            //app.UseIdentityServer();
             app.UseHttpsRedirection();
             app.UseMvc();
 

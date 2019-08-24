@@ -18,7 +18,11 @@ namespace Sojourner.Services
             database=client.GetDatabase(settings.DbName);
             _houses=database.GetCollection<House>(settings.HouseCollectionName);
         }
-
+        public House getHouseId (String id){
+            var query=_houses.AsQueryable().
+                Where(o=>o.id==id).First();
+            return query;
+        }
         public List<House> takeAvailableLong (){
             var query= _houses.AsQueryable().
                         Where(h=>h.longAvailable==true).
@@ -33,7 +37,16 @@ namespace Sojourner.Services
             var query=from o in database.GetCollection<Order>(settings.OrderCollectionName).AsQueryable()
                     where Int32.Parse(o.startDate)<ed||Int32.Parse(o.endDate)>sd
                     select o.hId;
-            return _houses.Find(s=>!query.Contains(s.id)).ToList<House>();
+            return _houses.Find(s=>s.longAvailable==false&&!query.Contains(s.id)).ToList<House>();
+        }
+        public List<House> takeAvailableAll( String  startdate,String enddate){
+            int sd=Int32.Parse(startdate);
+            int ed=Int32.Parse(enddate);
+            //change later
+            var query=from o in database.GetCollection<Order>(settings.OrderCollectionName).AsQueryable()
+                    where Int32.Parse(o.startDate)<ed||Int32.Parse(o.endDate)>sd
+                    select o.hId;
+            return _houses.Find(s=>s.longAvailable||!query.Contains(s.id)).ToList<House>();
         }
         public bool insertHouse(House tar){
             _houses.InsertOne(tar);
