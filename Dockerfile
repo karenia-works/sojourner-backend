@@ -9,4 +9,5 @@ FROM mcr.microsoft.com/dotnet/core-nightly/aspnet:3.0 as runtime
 ENV ASPNETCORE_URLS http://+:80
 WORKDIR /app
 COPY --from=build /app/bin/sojourner ./
+COPY ./appsettings.json ./
 ENTRYPOINT ["dotnet", "sojourner_backend.dll"]
