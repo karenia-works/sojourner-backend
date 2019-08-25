@@ -13,8 +13,15 @@ using Microsoft.Extensions.Options;
 using Sojourner.Services;
 using Sojourner.Models;
 using Sojourner.Models.Settings;
-using IdentityServer4.AspNetIdentity;
+using IdentityServer4;
+using IdentityServer4.Models;
+using IdentityServer4.Services;
+using IdentityServer4.Stores;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using back.Interface;
+using back.Repository;
+using back.Store;
 namespace Sojourner
 {
     public class Startup
@@ -35,6 +42,25 @@ namespace Sojourner
             sp.GetRequiredService<IOptions<DbSettings>>().Value);
             //services.AddIdentityServer();
             services.AddRouting();
+            services.AddAuthentication().AddOpenIdConnect("ocid","OpenID Connect",
+            options=>{options.SignInScheme=IdentityServerConstants.ExternalCookieAuthenticationScheme;
+            options.SignOutScheme=IdentityServerConstants.SignoutScheme;
+            options.Authority = "https://demo.identityserver.io/";
+            options.ClientId = "implicit";
+            options.TokenValidationParameters=new TokenValidationParameters
+                {
+                    NameClaimType="name",
+                    RoleClaimType="role"
+                };
+            }
+            );
+            services.AddTransient<IRepository,MongoRepository>();
+            services.AddTransient<ICorsPolicyService,InMemoryCorsPolicyService>();
+            services.AddTransient<IResourceStore,CustomResourceStore>();
+            services.AddTransient<IPersistedGrantStore,CustomPersistedGrantStore>();
+            services.AddIdentityServer();
+            
+
             services.AddSingleton<OrderService>();
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
@@ -56,7 +82,7 @@ namespace Sojourner
 
 
             app.UseCors();
-
+            app.UseIdentityServer();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());

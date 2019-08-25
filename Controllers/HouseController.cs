@@ -6,7 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
+using IdentityServer4.Stores;
 namespace Sojourner.Controllers
 {
 
@@ -17,6 +17,7 @@ namespace Sojourner.Controllers
         private HousesService _housesService;
         public RoomController(HousesService housesService)
         {
+            
             _housesService = housesService;
         }
 
