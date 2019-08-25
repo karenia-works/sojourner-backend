@@ -16,7 +16,7 @@ namespace Sojourner.Store
                     ClientSecrets={
                         new Secret("nomal client".Sha256())
                     },
-                    AllowedScopes=new []{"clientservice"}
+                    AllowedScopes=new []{"clientservice"},
 
                 }
             };
