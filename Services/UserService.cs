@@ -1,7 +1,6 @@
 using MongoDB.Driver;
 using Sojourner.Models;
 using MongoDB.Driver.Linq;
-using Sojourner.Models;
 using System.Collections.Generic;
 using Sojourner.Models.Settings;
 namespace Sojourner.Services
@@ -14,6 +13,13 @@ namespace Sojourner.Services
             var client = new MongoClient(settings.DbConnection);
             var database = client.GetDatabase(settings.DbConnection);
             _users = database.GetCollection<User>(settings.UserCollectionName);
+        }
+
+        public User getUserId(string id)
+        {
+            var query = _users.AsQueryable().
+                Where(u => u.id == id).First();
+            return query;
         }
 
         public bool insertUser(User tar)
