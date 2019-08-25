@@ -1,7 +1,6 @@
 using MongoDB.Driver;
 using Sojourner.Models;
 using MongoDB.Driver.Linq;
-using Sojourner.Models;
 using System.Collections.Generic;
 using Sojourner.Models.Settings;
 namespace Sojourner.Services

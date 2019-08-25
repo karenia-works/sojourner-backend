@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
-using back.Interface;
+using Sojourner.Interface;
 
-namespace back.Store
+namespace Sojourner.Store
 {
     public class CustomResourceStore : IResourceStore
     {

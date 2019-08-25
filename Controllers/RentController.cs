@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Sojourner.Models;
 using Sojourner.Services;
-namespace back.Controllers
+namespace Sojourner.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
@@ -10,9 +10,10 @@ namespace back.Controllers
     {
         private HousesService _housesService;
         private OrderService _orderService;
-        public RentController(HousesService housesService, OrderService orderService){
-            _housesService=housesService;
-            _orderService=orderService;
+        public RentController(HousesService housesService, OrderService orderService)
+        {
+            _housesService = housesService;
+            _orderService = orderService;
         }
         /* [HttpPost]
         public string rent(RentRequest rentRequest){

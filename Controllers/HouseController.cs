@@ -17,18 +17,18 @@ namespace Sojourner.Controllers
         private HousesService _housesService;
         public RoomController(HousesService housesService)
         {
-            
+
             _housesService = housesService;
         }
 
-        [HttpGet("/{id:regex([[0-9a-fA-F]]{{24}})}")]
+        [HttpGet("{id}")]
         public House getHouseId(string id)
         {
             var res = _housesService.getHouseId(id);
-            if (res == null)
-            {
-                NotFound();
-            }
+            // if (res == null)
+            // {
+            //     NotFound();
+            // }
             return res;
         }
         // [HttpGet]

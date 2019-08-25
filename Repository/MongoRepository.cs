@@ -3,14 +3,14 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using back.Interface;
+using Sojourner.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sojourner.Models.Settings;
-namespace back.Repository
+namespace Sojourner.Repository
 {
     /// <summary>
     /// Provides functionality  to persist "IdentityServer4.Models" into a given MongoDB
@@ -29,10 +29,10 @@ namespace back.Repository
 
             _client = new MongoClient(dbSettings.DbConnection);
             _database = _client.GetDatabase(dbSettings.DbName);
-            
+
         }
 
-        
+
 
         public IQueryable<T> All<T>() where T : class, new()
         {
@@ -74,6 +74,6 @@ namespace back.Repository
         }
 
 
-       
+
     }
 }
