@@ -13,8 +13,16 @@ using Microsoft.Extensions.Options;
 using Sojourner.Services;
 using Sojourner.Models;
 using Sojourner.Models.Settings;
-using IdentityServer4.AspNetIdentity;
+using IdentityServer4;
+using IdentityServer4.Models;
+using IdentityServer4.Services;
+using IdentityServer4.Stores;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Sojourner.Interface;
+using Sojourner.Repository;
+using Sojourner.Store;
+using IdentityServer4.Test;
 namespace Sojourner
 {
     public class Startup
@@ -30,11 +38,34 @@ namespace Sojourner
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<DbSettings>(
-                Configuration.GetSection(nameof(DbSettings)));
+            Configuration.GetSection(nameof(DbSettings)));
             services.AddSingleton<IDbSettings>(sp =>
             sp.GetRequiredService<IOptions<DbSettings>>().Value);
-            //services.AddIdentityServer();
             services.AddRouting();
+            services.AddAuthentication().AddOpenIdConnect("ocid", "OpenID Connect",
+            options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.SignOutScheme = IdentityServerConstants.SignoutScheme;
+                options.Authority = "localhost:5000";
+                options.ClientId = "cilent";
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "name",
+                    RoleClaimType = "role"
+                };
+                options.RequireHttpsMetadata = false;
+            }
+            );
+            //services.AddTransient<IRepository,MongoRepository>();
+            //services.AddTransient<ICorsPolicyService,InMemoryCorsPolicyService>();
+            //services.AddTransient<IResourceStore,CustomResourceStore>();
+            //services.AddTransient<IPersistedGrantStore,CustomPersistedGrantStore>();
+            services.AddIdentityServer().
+            AddDeveloperSigningCredential().
+            AddInMemoryClients(config.GetClients()).
+            AddInMemoryApiResources(config.GetApiResources()).
+            AddTestUsers(config.GetTestUsers());
             services.AddSingleton<OrderService>();
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
@@ -51,7 +82,7 @@ namespace Sojourner
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseIdentityServer();
             app.UseRouting();
 
 
