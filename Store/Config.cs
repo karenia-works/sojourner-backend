@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using IdentityServer4.Test;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+
 namespace Sojourner.Store
 {
     public class config
@@ -16,8 +19,9 @@ namespace Sojourner.Store
                     ClientSecrets={
                         new Secret("nomal client".Sha256())
                     },
-                    AllowedScopes=new []{"clientservice"}
-
+                    AllowedScopes=new []{"clientservice"},
+                    AllowedCorsOrigins=new[]{"*"}
+                    
                 }
             };
         }
@@ -40,4 +44,6 @@ namespace Sojourner.Store
             };
         }
     }
+
+  
 }

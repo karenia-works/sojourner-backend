@@ -57,15 +57,14 @@ namespace Sojourner
                 options.RequireHttpsMetadata = false;
             }
             );
-            //services.AddTransient<IRepository,MongoRepository>();
+            services.AddTransient<IRepository, MongoRepository>();
             //services.AddTransient<ICorsPolicyService,InMemoryCorsPolicyService>();
             //services.AddTransient<IResourceStore,CustomResourceStore>();
             //services.AddTransient<IPersistedGrantStore,CustomPersistedGrantStore>();
             services.AddIdentityServer().
             AddDeveloperSigningCredential().
             AddInMemoryClients(config.GetClients()).
-            AddInMemoryApiResources(config.GetApiResources()).
-            AddTestUsers(config.GetTestUsers());
+            AddInMemoryApiResources(config.GetApiResources()).AddResourceOwnerValidator<User>();
             services.AddSingleton<OrderService>();
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
