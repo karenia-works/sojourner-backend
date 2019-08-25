@@ -21,7 +21,7 @@ namespace Sojourner.Store
                     },
                     AllowedScopes=new []{"clientservice"},
                     AllowedCorsOrigins=new[]{"*"}
-                    
+
                 }
             };
         }
@@ -45,5 +45,5 @@ namespace Sojourner.Store
         }
     }
 
-  
+
 }
