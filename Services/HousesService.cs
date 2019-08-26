@@ -23,7 +23,7 @@ namespace Sojourner.Services
             database = client.GetDatabase(settings.DbName);
             _houses = database.GetCollection<House>(settings.HouseCollectionName);
         }
-        public House getHouseId(String id)
+        public House getHouseById(String id)
         {
             var query = _houses.AsQueryable().
                 Where(o => o.id == id).First();
@@ -113,14 +113,27 @@ namespace Sojourner.Services
             return aggregate.ToListAsync();
         }
 
-        public bool insertHouse(House tar)
+        public void insertHouse(House tar)
         {
             _houses.InsertOne(tar);
-            return true;
         }
         public Task insertHouseManyAsync(List<House> tars)
         {
             return _houses.InsertManyAsync(tars);
         }
+
+        public DeleteResult deleteHouse(House tar)
+        {
+            var res = _houses.DeleteOne(o => o.id == tar.id);
+            return res;
+        }
+
+        public ReplaceOneResult updateHouse(House tar)
+        {
+            var res = _houses.ReplaceOne(o=>o.id==tar.id, tar);
+            return res;
+        }
+
+
     }
 }

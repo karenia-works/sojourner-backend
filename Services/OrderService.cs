@@ -14,11 +14,6 @@ namespace Sojourner.Services
             var database = client.GetDatabase(settings.DbName);
             _orders = database.GetCollection<Order>(settings.OrderCollectionName);
         }
-        public bool insertOrder(Order tar)
-        {
-            _orders.InsertOne(tar);
-            return true;
-        }
         public List<Order> findUserOrder(string uid)
         {
             var query = _orders.AsQueryable().
@@ -33,11 +28,31 @@ namespace Sojourner.Services
             Select(o => o);
             return query.ToList();
         }
-        public Order findOrder(string id)
+        public Order getOrderById(string oid)
         {
             var query = _orders.AsQueryable().
-            Where(o => o.id == id).First();
+            Where(o => o.id == oid).First();
             return query;
+        }
+        public bool insertOrder(Order tar)
+        {
+            _orders.InsertOne(tar);
+            return true;
+        }
+        public DeleteResult deleteOrder(Order tar)
+        {
+            var res = _orders.DeleteOne(o => o.id == tar.id);
+            return res;
+        }
+
+        //修改isFinished
+        public UpdateResult isFinishedChange(string oid)
+        {
+            var flicker = Builders<Order>.Filter.Eq("id",oid);
+            var update = Builders<Order>.Update.Set("isFinished",true);
+            var res = _orders.UpdateOne(flicker,update);
+
+            return res;
         }
     }
 }

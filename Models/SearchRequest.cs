@@ -1,4 +1,3 @@
-
 namespace Sojourner.Models
 {
     public class SearchRequest
@@ -11,3 +10,4 @@ namespace Sojourner.Models
         public int skip { get; set; }
     }
 }
+

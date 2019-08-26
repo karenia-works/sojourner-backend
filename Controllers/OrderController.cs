@@ -22,7 +22,7 @@ namespace Sojourner.Controllers
         [HttpGet("/{id}")]
         public Order findOrder(string id)
         {
-            var res = _orderService.findOrder(id);
+            var res = _orderService.getOrderById(id);
             if (res == null)
             {
                 NotFound();
@@ -43,9 +43,9 @@ namespace Sojourner.Controllers
         }
 
         [HttpGet("/for_house")]
-        public List<Order> findHouseOrder(string hid)
+        public List<Order> findHouseOrder(string oid)
         {
-            var res = _orderService.findHouseOrder(hid);
+            var res = _orderService.findHouseOrder(oid);
             if (res == null)
             {
                 NotFound();
@@ -54,31 +54,59 @@ namespace Sojourner.Controllers
         }
 
 
-        [HttpPost()]
+        [HttpGet("/insert")]
         public IActionResult insertOrder(Order order)
         {
-            var tem = _orderService.findOrder(order.id);
-            if (tem != null)
+            if (order.id == null)
             {
-                //already exist
-                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "document already exist" });
+                order.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
+            }
+
+            var res = _orderService.insertOrder(order);
+            if (res != false)
+            {
+                //insert error
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "insert error" });
             }
             else
             {
-                var res = _orderService.insertOrder(order);
-                if (res != false)
+                //insert successful
+                return StatusCode(StatusCodes.Status201Created, order.id);
+            }
+        }
+        [HttpGet("/delete")]
+        public IActionResult deleteOrder(string oid)
+        {
+            var res = _orderService.getOrderById(oid);
+            if (res == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "order not exist" });
+            }
+            else
+            {
+                var tem = _orderService.deleteOrder(res);
+                if (tem.DeletedCount != 1)
                 {
-                    //insert error
-                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "insert error" });
+                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
                 }
                 else
                 {
-                    //insert successful
-                    return StatusCode(StatusCodes.Status201Created);
+                    return StatusCode(StatusCodes.Status200OK);
                 }
-
             }
+        }
 
+        public IActionResult isFinishedChange(string oid)
+        {
+            var res = _orderService.isFinishedChange(oid);
+            if(res == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest,new { success = false,error = "update isFinished failed"});
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status200OK);
+            }
         }
     }
 }
