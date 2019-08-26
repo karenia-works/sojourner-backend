@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Sojourner.Services;
 using Sojourner.Models;
 using System.Collections.Generic;
@@ -28,6 +29,9 @@ namespace Sojourner.Controllers
             }
             return res;
         }
+
+        // GET api/v1/order/for_user?uid=12345
+        [HttpGet("/for_user")]
         public List<Order> findUserOrder(string uid)
         {
             var res = _orderService.findUserOrder(uid);
@@ -37,6 +41,8 @@ namespace Sojourner.Controllers
             }
             return res;
         }
+
+        [HttpGet("/for_house")]
         public List<Order> findHouseOrder(string hid)
         {
             var res = _orderService.findHouseOrder(hid);
@@ -48,29 +54,31 @@ namespace Sojourner.Controllers
         }
 
 
-        [HttpPost("/insert")]
-        public String insertOrder(Order order)
+        [HttpPost()]
+        public IActionResult insertOrder(Order order)
         {
             var tem = _orderService.findOrder(order.id);
             if (tem != null)
             {
-                return "order already exist";
+                //already exist
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "document already exist" });
             }
             else
             {
                 var res = _orderService.insertOrder(order);
-                if (res != null)
+                if (res != false)
                 {
-                    return "insert order error";
+                    //insert error
+                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "insert error" });
                 }
                 else
                 {
-                    return "insert successful";
+                    //insert successful
+                    return StatusCode(StatusCodes.Status201Created);
                 }
 
             }
 
         }
-
     }
 }

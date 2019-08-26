@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Sojourner.Models;
 using Sojourner.Services;
 using System.Collections.Generic;
@@ -36,21 +37,21 @@ namespace Sojourner.Controllers
 
         //object type: string
         [HttpDelete("/{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public string removeUser(string id)
+        public IActionResult removeUser(string id)
         {
             var res = _userService.getUserId(id);
             if(res == null)
             {
-                return "cannot found user";
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "insert error" });
             }
             else
             {
                 var tem = _userService.removeUser(res);
                 if(tem == false){
-                    return "delete error";
+                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
                 }
                 else
-                    return "delete successful";
+                    return StatusCode(StatusCodes.Status201Created);
             }
             
         }
@@ -58,18 +59,19 @@ namespace Sojourner.Controllers
 
         //object type: User
         [HttpPost("/{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public string addUser(User user_in)
+        public IActionResult addUser(User user_in)
         {
             var tem = _userService.findClearUserName(user_in.username);
             if(tem != null){
-                return "user already exist";
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user already exist" });
             }
             else{
                 var res = _userService.insertUser(user_in);
                 if(res == false){
-                    return "add user error";
+                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "insert error" });
                 }
-                return "add successful";
+                else
+                    return StatusCode(StatusCodes.Status201Created);
             }
             
         }

@@ -14,7 +14,6 @@ namespace Sojourner.Models
         public DateTime startDate { get; set; }
         public DateTime endDate { get; set; }
         public bool isLongRent { get; set; }
-
-
+        public bool isFinished {get; set;}
     }
 }
