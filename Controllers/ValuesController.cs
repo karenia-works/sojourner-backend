@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Sojourner.Services;
 using Sojourner.Models;
+using Microsoft.AspNetCore.Authorization;
 namespace Sojourner.Controllers
 {
+    [Authorize(IdentityServer4.IdentityServerConstants.LocalApi.PolicyName)]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
@@ -17,11 +19,12 @@ namespace Sojourner.Controllers
             _orderService = orderService;
         }
         // GET api/values
+
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<string>> test()
         {
 
-            return new string[] { "value1", "value2" };
+            return new string[] { "value1", "value2", };
         }
 
         // GET api/values/5
@@ -32,10 +35,6 @@ namespace Sojourner.Controllers
         }
 
         // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
 
         // PUT api/values/5
         [HttpPut("{id}")]

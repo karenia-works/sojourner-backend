@@ -6,10 +6,10 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.Stores;
 namespace Sojourner.Controllers
 {
-
     [Route("api/v1/[controller]")]
     [ApiController]
     public class RoomController : ControllerBase
@@ -38,12 +38,13 @@ namespace Sojourner.Controllers
         //     return res;
         // }
         [HttpGet()]
-        public async Task<List<House>> kwHouses(string kw = "", string room_type = "", string start_date = "2000-1-1",
-         string end_date = "2099-12-31", int limit = 20, int skip = 0)
+        [Authorize(Policy = "nomalPolicy")]
+        public async Task<List<House>> kwHouses(string kw = "", string room_type = "", string startTime = "2000-1-1",
+         string endTime = "2099-12-31", int limit = 20, int skip = 0)
         {
-            var startTime = DateTime.Parse(start_date);
-            var endTime = DateTime.Parse(end_date);
-            var res = await _housesService.searchForHouse(startTime, endTime, kw.Split(' '), room_type.Split(' '), limit, skip);
+            var start_Time = DateTime.Parse(startTime);
+            var end_Time = DateTime.Parse(endTime);
+            var res = await _housesService.searchForHouse(start_Time, end_Time, kw.Split(' '), room_type.Split(' '), limit, skip);
 
             return res;
         }

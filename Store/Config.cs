@@ -19,8 +19,8 @@ namespace Sojourner.Store
                     ClientSecrets={
                         new Secret("nomal client".Sha256())
                     },
-                    AllowedScopes=new []{"clientservice"},
-                    AllowedCorsOrigins=new[]{"*"}
+                    AllowedScopes=new []{"clientservice", IdentityServer4.IdentityServerConstants.LocalApi.ScopeName},
+                    // AllowedCorsOrigins=new[]{"*"}
 
                 }
             };
@@ -29,7 +29,8 @@ namespace Sojourner.Store
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>{
-                new ApiResource("clientservice")
+                new ApiResource("clientservice"),
+                new ApiResource(IdentityServer4.IdentityServerConstants.LocalApi.ScopeName)
             };
 
         }
