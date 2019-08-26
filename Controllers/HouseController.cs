@@ -36,12 +36,12 @@ namespace Sojourner.Controllers
         }
 
         [HttpGet()]
-        public async Task<List<House>> searchHouses(string kw = "", string room_type = "", string start_date = "2099-1-1",
-         string end_date = "2099-12-31", int limit = 20, int skip = 0)
+        public async Task<List<House>> searchHouses(string kw = "", string roomType = "", string startTime = "2099-1-1",
+         string endTime = "2099-12-31", int limit = 20, int skip = 0)
         {
-            var start_Time = DateTime.Parse(startTime);
-            var end_Time = DateTime.Parse(endTime);
-            var res = await _housesService.searchForHouse(start_Time, end_Time, kw.Split(' '), room_type.Split(' '), limit, skip);
+            var _startTime = DateTime.Parse(startTime);
+            var _endTime = DateTime.Parse(endTime);
+            var res = await _housesService.searchForHouse(_startTime, _endTime, kw.Split(' '), roomType.Split(' '), limit, skip);
 
             return res;
         }
