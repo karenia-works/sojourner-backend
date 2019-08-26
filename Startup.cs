@@ -17,7 +17,6 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
-using IdentityServer4.AccessTokenValidation;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Sojourner.Interface;
