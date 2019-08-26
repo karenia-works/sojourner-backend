@@ -38,7 +38,6 @@ namespace Sojourner.Controllers
         //     return res;
         // }
         [HttpGet()]
-        [Authorize(Policy = "nomalPolicy")]
         public async Task<List<House>> kwHouses(string kw = "", string room_type = "", string startTime = "2000-1-1",
          string endTime = "2099-12-31", int limit = 20, int skip = 0)
         {
