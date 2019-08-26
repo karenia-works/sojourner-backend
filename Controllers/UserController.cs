@@ -1,4 +1,6 @@
 using System;
+using MongoDB.Driver;
+using MongoDB.Bson;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Sojourner.Models;
@@ -37,21 +39,21 @@ namespace Sojourner.Controllers
 
         //object type: string
         [HttpDelete("/{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public IActionResult removeUser(string id)
+        public IActionResult deleteUser(string id)
         {
             var res = _userService.getUserId(id);
             if(res == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "insert error" });
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user not exist" });
             }
             else
             {
-                var tem = _userService.removeUser(res);
-                if(tem == false){
+                var tem = _userService.deleteUser(res);
+                if(tem.DeletedCount != 1){
                     return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
                 }
                 else
-                    return StatusCode(StatusCodes.Status201Created);
+                    return StatusCode(StatusCodes.Status200OK);
             }
             
         }
@@ -59,23 +61,34 @@ namespace Sojourner.Controllers
 
         //object type: User
         [HttpPost("/{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public IActionResult addUser(User user_in)
+        public IActionResult insertUser(User user_in)
         {
             var tem = _userService.findClearUserName(user_in.username);
             if(tem != null){
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user already exist" });
             }
             else{
-                var res = _userService.insertUser(user_in);
-                if(res == false){
-                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "insert error" });
-                }
-                else
-                    return StatusCode(StatusCodes.Status201Created);
+                user_in.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
+                _userService.insertUser(user_in);
+                return StatusCode(StatusCodes.Status201Created);
             }
             
         }
 
+        [HttpPost()]
+        public IActionResult updateUser(User user_in)
+        {
+            var res = _userService.getUserId(user_in.id);
+            if(res == null){
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user not exist" });
+            }
+            UpdateResult result = _userService.editUser(user_in);
+            if(result != null){
+                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "edit error" });
+            }
+            else
+                return StatusCode(StatusCodes.Status200OK);
+        }
         
     }
 }
