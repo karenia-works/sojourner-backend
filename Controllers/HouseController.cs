@@ -79,7 +79,7 @@ namespace Sojourner.Controllers
         public IActionResult updateHouse(House house)
         {
             var res = _housesService.updateHouse(house);
-            if(res != 1)
+            if(res != null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest,new{success = false,error = "update error"});
             }
