@@ -78,7 +78,10 @@ namespace Sojourner
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseCors();
+            app.UseCors(policy =>
+            {
+                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            });
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
