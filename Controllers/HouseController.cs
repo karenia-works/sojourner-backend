@@ -24,7 +24,7 @@ namespace Sojourner.Controllers
 
         }
 
-        [HttpGet("/{id:regex([[0-9a-fA-F]]{{24}})}")]
+        [HttpGet("/{id}")]
         public House getHouseById(string id)
         {
             var res = _housesService.getHouseById(id);
@@ -51,7 +51,7 @@ namespace Sojourner.Controllers
         {
             house.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
             _housesService.insertHouse(house);
-            return StatusCode(StatusCodes.Status201Created,new { id = house.id });
+            return StatusCode(StatusCodes.Status201Created, new { id = house.id });
         }
 
         [HttpGet("/delete")]
@@ -79,9 +79,9 @@ namespace Sojourner.Controllers
         public IActionResult updateHouse(House house)
         {
             var res = _housesService.updateHouse(house);
-            if(res != null)
+            if (res != null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest,new{success = false,error = "update error"});
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "update error" });
             }
             else
             {

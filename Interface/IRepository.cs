@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace back.Interface
+namespace Sojourner.Interface
 {
     /// <summary>
     /// Basic interface with a few methods for adding, deleting, and querying data.
