@@ -1,4 +1,5 @@
 using MongoDB.Driver;
+using MongoDB.Bson;
 using Sojourner.Models;
 using MongoDB.Driver.Linq;
 using System.Collections.Generic;
@@ -22,10 +23,9 @@ namespace Sojourner.Services
             return query;
         }
 
-        public bool insertUser(User tar)
+        public void insertUser(User tar)
         {
             _users.InsertOne(tar);
-            return true;
         }
 
         public List<User> findClearUserName(string keyword)
@@ -36,10 +36,18 @@ namespace Sojourner.Services
             return query.ToList();
         }
 
-        public bool removeUser(User tar)
+        public DeleteResult deleteUser(User tar)
         {
-            _users.DeleteOne(o => o.id == tar.id);
-            return true;
+            var result = _users.DeleteOne(o => o.id == tar.id);
+            return result;
+        }
+
+        public UpdateResult editUser(User user)
+        {
+            var flicker = Builders<User>.Filter.Eq("id", user.id);
+            var update = Builders<User>.Update.Set("username", user.username).Set("password", user.password).Set("state", user.state);
+            var result = _users.UpdateOne(flicker, update);
+            return result;
         }
     }
 }
