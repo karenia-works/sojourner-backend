@@ -4,6 +4,7 @@ using Sojourner.Models;
 using MongoDB.Driver.Linq;
 using System.Collections.Generic;
 using Sojourner.Models.Settings;
+using System.Threading.Tasks;
 namespace Sojourner.Services
 {
     public class UserService
@@ -12,7 +13,7 @@ namespace Sojourner.Services
         public UserService(IDbSettings settings)
         {
             var client = new MongoClient(settings.DbConnection);
-            var database = client.GetDatabase(settings.DbConnection);
+            var database = client.GetDatabase(settings.DbName);
             _users = database.GetCollection<User>(settings.UserCollectionName);
         }
 
@@ -27,7 +28,13 @@ namespace Sojourner.Services
         {
             _users.InsertOne(tar);
         }
-
+        public async Task<User> findUser(string username, string password)
+        {
+            var query = await _users.AsQueryable().
+            Where(user => user.username == username && user.password == password).
+            FirstAsync();
+            return query;
+        }
         public List<User> findClearUserName(string keyword)
         {
             var query = _users.AsQueryable().

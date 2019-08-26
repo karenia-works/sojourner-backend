@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using IdentityServer4.Test;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+
 namespace Sojourner.Store
 {
     public class config
@@ -16,7 +19,8 @@ namespace Sojourner.Store
                     ClientSecrets={
                         new Secret("nomal client".Sha256())
                     },
-                    AllowedScopes=new []{"clientservice"}
+                    AllowedScopes=new []{"clientservice", IdentityServer4.IdentityServerConstants.LocalApi.ScopeName},
+                    // AllowedCorsOrigins=new[]{"*"}
 
                 }
             };
@@ -25,7 +29,8 @@ namespace Sojourner.Store
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>{
-                new ApiResource("clientservice")
+                new ApiResource("clientservice"),
+                new ApiResource(IdentityServer4.IdentityServerConstants.LocalApi.ScopeName)
             };
 
         }
@@ -40,4 +45,6 @@ namespace Sojourner.Store
             };
         }
     }
+
+
 }
