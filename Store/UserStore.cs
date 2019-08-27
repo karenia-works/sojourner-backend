@@ -5,6 +5,7 @@ using Sojourner.Models;
 using Sojourner.Services;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
+using IdentityServer4;
 using System.Collections.Generic;
 namespace Sojourner.Store
 {
@@ -31,8 +32,9 @@ namespace Sojourner.Store
                 claims: new Claim[]{
                     new Claim("id",result.id),
                     new Claim("username",result.username),
-                    new Claim(ClaimTypes.Role,"nsomal")
+                    new Claim("Role",result.role)
                 }
+                
             );
 
         }

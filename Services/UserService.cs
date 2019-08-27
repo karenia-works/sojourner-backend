@@ -24,9 +24,12 @@ namespace Sojourner.Services
         public async Task<User> findUser(string username, string password)
         {
             var query = await _users.AsQueryable().
-            Where(user => user.username == username && user.password == password).
-            FirstAsync();
-            return query;
+            Where(user => user.username == username && user.password == password).ToListAsync();
+            if (query.Count==0)
+            {
+                return null;
+            }
+            return query[0];
         }
         public List<User> findClearUserName(string keyword)
         {
