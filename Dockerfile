@@ -1,4 +1,6 @@
-FROM mcr.microsoft.com/dotnet/core-nightly/sdk:3.0 as build
+# Building from Huawei Cloud; use huawei images
+# FROM mcr.microsoft.com/dotnet/core-nightly/sdk:3.0 as build
+FROM swr.cn-north-1.myhuaweicloud.com/codeci/dotnet/core-nightly/sdk:3.0 as build
 WORKDIR /app
 COPY ./* sojourner/
 WORKDIR /app/sojourner/
