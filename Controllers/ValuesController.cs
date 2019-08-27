@@ -8,7 +8,7 @@ using Sojourner.Models;
 using Microsoft.AspNetCore.Authorization;
 namespace Sojourner.Controllers
 {
-    [Authorize(IdentityServer4.IdentityServerConstants.LocalApi.PolicyName)]
+    //[Authorize(IdentityServer4.IdentityServerConstants.LocalApi.PolicyName)]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
@@ -19,14 +19,20 @@ namespace Sojourner.Controllers
             _orderService = orderService;
         }
         // GET api/values
-
-        [HttpGet]
+        [Authorize("adminservice")]
+        [HttpGet("admin")]
         public ActionResult<IEnumerable<string>> test()
         {
 
             return new string[] { "value1", "value2", };
         }
+        [Authorize(IdentityServer4.IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpGet("nomal")]
+        public ActionResult<IEnumerable<string>> nomaltest()
+        {
 
+            return new string[] { "value1", };
+        }
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)

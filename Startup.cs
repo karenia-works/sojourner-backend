@@ -12,13 +12,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sojourner.Services;
 using Sojourner.Models;
+using System.Security.Claims;
 using Sojourner.Models.Settings;
 using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Sojourner.Interface;
 using Sojourner.Repository;
 using Sojourner.Store;
@@ -62,8 +63,16 @@ namespace Sojourner
             });
             services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));
             services.AddSingleton<IDbSettings>(settings => settings.GetRequiredService<IOptions<DbSettings>>().Value);
-            services.AddAuthorization();
-            // services.AddAuthorization(policy => policy.AddPolicy("nomal", builder => builder.RequireScope("clientservice")));
+            services.AddAuthorization(option => {option.AddPolicy(
+                "adminservice", policy =>
+                    {
+                    policy.AddAuthenticationSchemes(IdentityServerConstants.LocalApi.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("Role","admin");
+                    }
+                );
+            });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

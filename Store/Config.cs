@@ -4,7 +4,8 @@ using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-
+using IdentityServer4;
+using System.Security.Claims;
 namespace Sojourner.Store
 {
     public class config
@@ -17,20 +18,21 @@ namespace Sojourner.Store
                     ClientId="client",
                     AllowedGrantTypes=GrantTypes.ResourceOwnerPasswordAndClientCredentials,
                     ClientSecrets={
-                        new Secret("nomal client".Sha256())
+                        new Secret("client".Sha256())
                     },
-                    AllowedScopes=new []{"clientservice", IdentityServer4.IdentityServerConstants.LocalApi.ScopeName},
+                    AllowedScopes=new []{IdentityServer4.IdentityServerConstants.LocalApi.ScopeName},
                     // AllowedCorsOrigins=new[]{"*"}
 
-                }
+                },
+                
             };
         }
 
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>{
-                new ApiResource("clientservice"),
-                new ApiResource(IdentityServer4.IdentityServerConstants.LocalApi.ScopeName)
+                new ApiResource("admin","adminApi",new string[]{"Role"}),
+                new ApiResource(IdentityServer4.IdentityServerConstants.LocalApi.ScopeName,"identityapi",new string[]{"Role"})
             };
 
         }
