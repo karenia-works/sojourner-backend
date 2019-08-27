@@ -55,7 +55,7 @@ namespace Sojourner.Services
         public UpdateResult editUser(User user)
         {
             var flicker = Builders<User>.Filter.Eq("id", user.id);
-            var update = Builders<User>.Update.Set("username", user.username).Set("password", user.password).Set("state", user.state);
+            var update = Builders<User>.Update.Set("username", user.username).Set("password", user.password).Set("role", user.role);
             var result = _users.UpdateOne(flicker, update);
             return result;
         }
