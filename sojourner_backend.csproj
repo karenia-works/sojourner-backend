@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MimeTypes" Version="1.1.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="MongoDB.Bson" Version="2.9.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.9.1" />
     <PackageReference Include="MongoDB.Driver.GridFs" Version="2.9.1" />
