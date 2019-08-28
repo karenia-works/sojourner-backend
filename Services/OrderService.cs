@@ -1,3 +1,4 @@
+using System;
 using Sojourner.Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -54,5 +55,10 @@ namespace Sojourner.Services
 
             return res;
         }
+
+        // public DateTime calCancelDate(DateTime ct)
+        // {
+            
+        // }
     }
 }

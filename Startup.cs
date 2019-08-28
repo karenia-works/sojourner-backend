@@ -12,16 +12,18 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sojourner.Services;
 using Sojourner.Models;
+using System.Security.Claims;
 using Sojourner.Models.Settings;
 using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using IdentityServer4.Stores;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using back.Interface;
-using back.Repository;
-using back.Store;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Sojourner.Interface;
+using Sojourner.Repository;
+using Sojourner.Store;
+using IdentityServer4.Test;
 namespace Sojourner
 {
     public class Startup
@@ -37,37 +39,40 @@ namespace Sojourner
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<DbSettings>(
-                Configuration.GetSection(nameof(DbSettings)));
+            Configuration.GetSection(nameof(DbSettings)));
             services.AddSingleton<IDbSettings>(sp =>
             sp.GetRequiredService<IOptions<DbSettings>>().Value);
-            //services.AddIdentityServer();
+
+            services.AddLocalApiAuthentication();
+
             services.AddRouting();
-            services.AddAuthentication().AddOpenIdConnect("ocid","OpenID Connect",
-            options=>{options.SignInScheme=IdentityServerConstants.ExternalCookieAuthenticationScheme;
-            options.SignOutScheme=IdentityServerConstants.SignoutScheme;
-            options.Authority = "https://demo.identityserver.io/";
-            options.ClientId = "implicit";
-            options.TokenValidationParameters=new TokenValidationParameters
-                {
-                    NameClaimType="name",
-                    RoleClaimType="role"
-                };
-            }
-            );
-            services.AddTransient<IRepository,MongoRepository>();
-            services.AddTransient<ICorsPolicyService,InMemoryCorsPolicyService>();
-            services.AddTransient<IResourceStore,CustomResourceStore>();
-            services.AddTransient<IPersistedGrantStore,CustomPersistedGrantStore>();
-            services.AddIdentityServer();
-            
+            services.AddControllers();
 
             services.AddSingleton<OrderService>();
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
-            services.AddControllers();
 
+            services.AddIdentityServer().
+                AddDeveloperSigningCredential().
+                AddInMemoryClients(config.GetClients()).
+                AddInMemoryApiResources(config.GetApiResources()).AddResourceOwnerValidator<UserStore>();
+            services.AddSingleton<ICorsPolicyService>(new DefaultCorsPolicyService(new LoggerFactory().CreateLogger<DefaultCorsPolicyService>())
+            {
+                AllowedOrigins = new[] { "*" },
+                AllowAll = true
+            });
             services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));
             services.AddSingleton<IDbSettings>(settings => settings.GetRequiredService<IOptions<DbSettings>>().Value);
+            services.AddAuthorization(option => {option.AddPolicy(
+                "adminservice", policy =>
+                    {
+                    policy.AddAuthenticationSchemes(IdentityServerConstants.LocalApi.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("Role","admin");
+                    }
+                );
+            });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,13 +83,14 @@ namespace Sojourner
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting();
-
-
-            app.UseCors();
             app.UseIdentityServer();
             app.UseAuthentication();
+            app.UseRouting();
             app.UseAuthorization();
+            app.UseCors(policy =>
+            {
+                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            });
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
