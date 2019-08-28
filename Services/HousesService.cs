@@ -26,8 +26,10 @@ namespace Sojourner.Services
         public House getHouseById(String id)
         {
             var query = _houses.AsQueryable().
-                Where(o => o.id == id).FirstOrDefault();
-            return query;
+                Where(o => o.id == id).Select(house => house);
+            if (query.Count() == 0)
+                return null;
+            else return query.First();
         }
         public List<House> takeAvailableLong()
         {

@@ -82,11 +82,12 @@ namespace Sojourner.Controllers
             }
         }
         [Authorize("adminApi")]
+        [HttpPost("update")]
         public IActionResult updateHouse(House house)
 
         {
-            if (house.id != null && house.id != id) return BadRequest();
-            if (house.id == null) house.id = id;
+            if (_housesService.getHouseById(house.id) == null)
+                return StatusCode(StatusCodes.Status204NoContent);
 
             var res = _housesService.updateHouse(house);
             if (res != null)
