@@ -5,7 +5,7 @@ using Sojourner.Services;
 using Sojourner.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 namespace Sojourner.Controllers
 {
     [Route("api/v1/[controller]")]
@@ -19,8 +19,8 @@ namespace Sojourner.Controllers
             _orderService = orderService;
         }
 
-        [HttpGet("/{id}")]
-        public Order findOrder(string id)
+        [HttpGet("find")]
+        public Order findOrder(string id = "123451234512345123451234")
         {
             var res = _orderService.getOrderById(id);
             if (res == null)
@@ -31,8 +31,8 @@ namespace Sojourner.Controllers
         }
 
         // GET api/v1/order/for_user?uid=12345
-        [HttpGet("/for_user")]
-        public List<Order> findUserOrder(string uid)
+        [HttpGet("for_user")]
+        public List<Order> findUserOrder(string uid = "123451234512345123451234")
         {
             var res = _orderService.findUserOrder(uid);
             if (res == null)
@@ -42,8 +42,8 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [HttpGet("/for_house")]
-        public List<Order> findHouseOrder(string oid)
+        [HttpGet("for_house")]
+        public List<Order> findHouseOrder(string oid = "123451234512345123451234")
         {
             var res = _orderService.findHouseOrder(oid);
             if (res == null)
@@ -54,7 +54,7 @@ namespace Sojourner.Controllers
         }
 
 
-        [HttpGet("/insert")]
+        [HttpPost("insert")]
         public IActionResult insertOrder(Order order)
         {
             if (order.id == null)
@@ -74,7 +74,8 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status201Created, order.id);
             }
         }
-        [HttpGet("/delete")]
+        [Authorize("adminApi")]
+        [HttpPost("/delete")]
         public IActionResult deleteOrder(string oid)
         {
             var res = _orderService.getOrderById(oid);
@@ -99,9 +100,9 @@ namespace Sojourner.Controllers
         public IActionResult isFinishedChange(string oid)
         {
             var res = _orderService.isFinishedChange(oid);
-            if(res == null)
+            if (res == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest,new { success = false,error = "update isFinished failed"});
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "update isFinished failed" });
             }
             else
             {

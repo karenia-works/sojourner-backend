@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using IdentityServer4;
 using System.Security.Claims;
+using Sojourner.Models.Settings;
 namespace Sojourner.Store
 {
     public class config
@@ -24,13 +25,15 @@ namespace Sojourner.Store
                     // AllowedCorsOrigins=new[]{"*"}
 
                 },
-                
+
             };
         }
+
 
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>{
+                new ApiResource("worker","workerApi",new string[]{"Role"}),
                 new ApiResource("admin","adminApi",new string[]{"Role"}),
                 new ApiResource(IdentityServer4.IdentityServerConstants.LocalApi.ScopeName,"identityapi",new string[]{"Role"})
             };
