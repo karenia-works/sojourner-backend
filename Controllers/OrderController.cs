@@ -19,7 +19,7 @@ namespace Sojourner.Controllers
             _orderService = orderService;
         }
 
-        [HttpGet("/{id}")]
+        [HttpGet("{id}")]
         public Order findOrder(string id)
         {
             var res = _orderService.getOrderById(id);
@@ -31,7 +31,7 @@ namespace Sojourner.Controllers
         }
 
         // GET api/v1/order/for_user?uid=12345
-        [HttpGet("/for_user")]
+        [HttpGet("for_user")]
         public List<Order> findUserOrder(string uid)
         {
             var res = _orderService.findUserOrder(uid);
@@ -42,7 +42,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [HttpGet("/for_house")]
+        [HttpGet("for_house")]
         public List<Order> findHouseOrder(string oid)
         {
             var res = _orderService.findHouseOrder(oid);
@@ -54,7 +54,7 @@ namespace Sojourner.Controllers
         }
 
 
-        [HttpGet("/insert")]
+        [HttpPost]
         public IActionResult insertOrder(Order order)
         {
             if (order.id == null)
@@ -74,7 +74,7 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status201Created, order.id);
             }
         }
-        [HttpGet("/delete")]
+        [HttpDelete("{id}")]
         public IActionResult deleteOrder(string oid)
         {
             var res = _orderService.getOrderById(oid);
@@ -96,12 +96,13 @@ namespace Sojourner.Controllers
             }
         }
 
+        [HttpGet("{oid}/setFinished")]
         public IActionResult isFinishedChange(string oid)
         {
             var res = _orderService.isFinishedChange(oid);
-            if(res == null)
+            if (res == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest,new { success = false,error = "update isFinished failed"});
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "update isFinished failed" });
             }
             else
             {
