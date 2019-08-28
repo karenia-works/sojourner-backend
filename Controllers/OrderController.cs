@@ -53,15 +53,10 @@ namespace Sojourner.Controllers
             return res;
         }
 
-
-        [HttpGet("/insert")]
+        [HttpGet("insert")]
         public IActionResult insertOrder(Order order)
         {
-            if (order.id == null)
-            {
-                order.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
-            }
-
+            order.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
             var res = _orderService.insertOrder(order);
             if (res != false)
             {
@@ -74,7 +69,7 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status201Created, order.id);
             }
         }
-        [HttpGet("/delete")]
+        [HttpGet("delete")]
         public IActionResult deleteOrder(string oid)
         {
             var res = _orderService.getOrderById(oid);
@@ -96,9 +91,9 @@ namespace Sojourner.Controllers
             }
         }
 
-        public IActionResult isFinishedChange(string oid)
+        public IActionResult isFinishedChange(Order order)
         {
-            var res = _orderService.isFinishedChange(oid);
+            var res = _orderService.isFinishedChange(order.id);
             if(res == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest,new { success = false,error = "update isFinished failed"});

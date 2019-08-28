@@ -22,6 +22,11 @@ namespace Sojourner.Services
                 Where(o => o.id == id).First();
             return query;
         }
+        public bool insertIssue(Issue tar)
+        {
+            _issues.InsertOne(tar);
+            return true;
+        }
         public UpdateResult replyToComplain(string iid,string reply)
         {
             var flicker = Builders<Issue>.Filter.Eq("id",iid);
@@ -30,15 +35,15 @@ namespace Sojourner.Services
 
             return res;
         }
-        public UpdateResult setWorker(string iid,string wid)
+        
+        public UpdateResult sendWorker(string iid,string wid)
         {
             var flicker = Builders<Issue>.Filter.Eq("id",iid);
-            var update = Builders<Issue>.Update.Set("iid",iid).Set("wid",wid);
+            var update = Builders<Issue>.Update.Set("wid",wid);
             var res = _issues.UpdateOne(flicker,update);
 
-            return res;
-        }
-        
+            return res; 
+        } 
         
     }
 }

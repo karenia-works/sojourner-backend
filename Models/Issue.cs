@@ -6,9 +6,10 @@ namespace Sojourner.Models
 {
     public class Issue
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonId]//
+        [BsonRepresentation(BsonType.ObjectId)]//外键也要加
         public string id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
         public string wid { get; set; }//维修师傅
         public string[] img { get; set; }
         public string complaint { get; set; }

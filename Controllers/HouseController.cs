@@ -24,7 +24,7 @@ namespace Sojourner.Controllers
 
         }
 
-        [HttpGet("/{id}")]
+        [HttpGet("{id}")]
         public House getHouseById(string id)
         {
             var res = _housesService.getHouseById(id);
