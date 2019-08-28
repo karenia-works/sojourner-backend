@@ -25,7 +25,7 @@ namespace Sojourner.Controllers
         }
 
         //object type: string
-        [HttpGet("/{id:regex([[0-9a-fA-F]]{{24}})}")]
+        [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public User getUserId(string id)
         {
             var res = _userService.getUserId(id);
@@ -37,7 +37,7 @@ namespace Sojourner.Controllers
         }
 
         //object type: string
-        [HttpDelete("/{id:regex([[0-9a-fA-F]]{{24}})}")]
+        [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public IActionResult deleteUser(string id)
         {
             var res = _userService.getUserId(id);
@@ -60,7 +60,7 @@ namespace Sojourner.Controllers
 
 
         //object type: User
-        [HttpPost("/{id:regex([[0-9a-fA-F]]{{24}})}")]
+        [HttpPost("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public IActionResult insertUser(User user_in)
         {
             var tem = _userService.findClearUserName(user_in.username);

@@ -9,11 +9,13 @@ namespace Sojourner.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
         public string houseId { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
         public string userId { get; set; }
         public DateTime startDate { get; set; }
         public DateTime endDate { get; set; }
         public bool isLongRent { get; set; }
-        public bool isFinished {get; set;}
+        public bool isFinished { get; set; }
     }
 }
