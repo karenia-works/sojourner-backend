@@ -28,6 +28,7 @@ namespace Sojourner.Controllers
 
         [HttpGet("find")]
         public House getHouseById(string id = "5d612bfe2cc8473388248d5b")
+
         {
             var res = _housesService.getHouseById(id);
             if (res == null)
@@ -50,6 +51,7 @@ namespace Sojourner.Controllers
         }
         [Authorize("adminApi")]
         [HttpGet("insert")]
+
         public IActionResult insertHouse(House house)
         {
             house.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
@@ -58,6 +60,7 @@ namespace Sojourner.Controllers
         }
         [Authorize("adminApi")]
         [HttpGet("delete")]
+
         public IActionResult deleteHouse(string hid)
         {
             var res = _housesService.getHouseById(hid);
@@ -80,7 +83,11 @@ namespace Sojourner.Controllers
         }
         [Authorize("adminApi")]
         public IActionResult updateHouse(House house)
+
         {
+            if (house.id != null && house.id != id) return BadRequest();
+            if (house.id == null) house.id = id;
+
             var res = _housesService.updateHouse(house);
             if (res != null)
             {
@@ -91,8 +98,5 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status200OK);
             }
         }
-
-
-
     }
 }
