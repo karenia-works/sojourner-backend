@@ -61,10 +61,10 @@ namespace Sojourner.Controllers
 
         //object type: User
         [HttpPost]
-        public IActionResult insertUser(User user_in)
+        public IActionResult insertUser([FromBody] User user_in)
         {
             var tem = _userService.findClearUserName(user_in.username);
-            if (tem != null)
+            if (tem != null && tem.Count != 0)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user already exist" });
             }
@@ -74,11 +74,10 @@ namespace Sojourner.Controllers
                 _userService.insertUser(user_in);
                 return StatusCode(StatusCodes.Status201Created);
             }
-
         }
 
         [HttpPost("{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public IActionResult updateUser(User user_in)
+        public IActionResult updateUser([FromBody]User user_in)
         {
             var res = _userService.getUserId(user_in.id);
             if (res == null)

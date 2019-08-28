@@ -26,8 +26,8 @@ namespace Sojourner.Controllers
 
         }
 
-        [HttpGet("find")]
-        public House getHouseById(string id = "5d612bfe2cc8473388248d5b")
+        [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
+        public House getHouseById(string id)
 
         {
             var res = _housesService.getHouseById(id);

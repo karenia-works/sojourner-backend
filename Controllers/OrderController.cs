@@ -32,9 +32,9 @@ namespace Sojourner.Controllers
             }
             return res;
         }
-        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
 
         // GET api/v1/order/for_user?uid=12345
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("for_user")]
         public List<Order> findUserOrder(string uid = "123451234512345123451234")
 
@@ -47,8 +47,8 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [HttpGet("for_house")]
 
+        [HttpGet("for_house")]
         public List<Order> findHouseOrder(string oid = "123451234512345123451234")
 
         {
@@ -62,9 +62,8 @@ namespace Sojourner.Controllers
 
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
-        [HttpPost("insert")]
-
-        public IActionResult insertOrder(Order order)
+        [HttpPost()]
+        public IActionResult insertOrder([FromBody]Order order)
         {
             if (order.id == null)
             {
@@ -85,11 +84,10 @@ namespace Sojourner.Controllers
         }
 
         [Authorize("adminApi")]
-        [HttpPost("delete")]
-        public IActionResult deleteOrder(string oid = "123451234512345123451234")
-
+        [HttpDelete("{id}")]
+        public IActionResult deleteOrder(string id)
         {
-            var res = _orderService.getOrderById(oid);
+            var res = _orderService.getOrderById(id);
             if (res == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "order not exist" });

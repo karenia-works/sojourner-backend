@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Sojourner.Models;
 using Sojourner.Services;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Sojourner.Controllers
 {
@@ -20,7 +21,7 @@ namespace Sojourner.Controllers
             _profileService = profileService;
         }
 
-        [HttpGet("/{id:regex([[0-9a-fA-F]]{{24}})}")]
+        [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public Profile getProfileById(string id){
             var res = _profileService.getProfileById(id);
             if(res == null){
@@ -30,21 +31,23 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [HttpGet("/{id:regex([[0-9a-fA-F]]{{24}})}")]
+        [HttpGet("{username}")]
         public Profile getProfileByUserName(string userName){
             var res = _profileService.getProfileByUserName(userName);
-            if(res == null){
+            if(res == null){ 
                 NotFound();
                 //return StatusCode(StatusCodes.Status404NotFound, new {success = false, error = "user not exist"});
             }
             return res;
         }
 
+        [Authorize("adminApi")]
         public List<Profile> getProfileList(){
             var res = _profileService.getProfileList();
             return res;
         }
 
+        [Authorize("adminApi")]
         [HttpDelete("/{id:regex([[0-9a-fA-F]]{{24}})}")]
         public IActionResult deleteProfile(string id)
         {
@@ -65,8 +68,9 @@ namespace Sojourner.Controllers
             }
         }
 
-        [HttpPost("/{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public IActionResult insertProfile(Profile user_in)
+        [Authorize("adminApi")]
+        [HttpPost("{id:regex([[0-9a-fA-F]]{{24}})}")]
+        public IActionResult insertProfile([FromBody] Profile user_in)
         {
             var tem = _profileService.getProfileByUserName(user_in.userName);
             if (tem != null)
@@ -82,10 +86,16 @@ namespace Sojourner.Controllers
 
         }
 
-        [HttpPost()]
-        public IActionResult updateProfile(Profile user_in)
+        [HttpPost("{id}")]
+        public IActionResult updateProfile(string userId, [FromBody]Profile user_in)
         {
+            if(userId != user_in.userId)
+            {
+                return BadRequest(new { success = false, error = "user id do not match" });
+            }
+
             var res = _profileService.getProfileById(user_in.userId);
+            
             if (res == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user profile not exist" });
