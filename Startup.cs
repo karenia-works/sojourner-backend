@@ -54,7 +54,7 @@ namespace Sojourner
             services.AddSingleton<ImageService>();
             services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));
             services.AddSingleton<IDbSettings>(settings => settings.GetRequiredService<IOptions<DbSettings>>().Value);
-
+            services.AddSingleton<CheckService>();
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
                 .AddInMemoryClients(config.GetClients())
