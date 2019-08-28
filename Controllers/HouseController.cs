@@ -5,12 +5,14 @@ using Sojourner.Models;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using IdentityServer4;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
 using MongoDB;
-
+using Sojourner.Models.Settings;
+using Sojourner.Store;
 namespace Sojourner.Controllers
 {
     [Route("api/v1/[controller]")]
@@ -24,8 +26,9 @@ namespace Sojourner.Controllers
 
         }
 
-        [HttpGet("{id}")]
-        public House getHouseById(string id)
+        [HttpGet("find")]
+        public House getHouseById(string id = "5d612bfe2cc8473388248d5b")
+
         {
             var res = _housesService.getHouseById(id);
             if (res == null)
@@ -46,16 +49,18 @@ namespace Sojourner.Controllers
 
             return res;
         }
+        [Authorize("adminApi")]
+        [HttpGet("insert")]
 
-        [HttpPost]
         public IActionResult insertHouse(House house)
         {
             house.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
             _housesService.insertHouse(house);
             return StatusCode(StatusCodes.Status201Created, new { id = house.id });
         }
+        [Authorize("adminApi")]
+        [HttpGet("delete")]
 
-        [HttpDelete("{hid}")]
         public IActionResult deleteHouse(string hid)
         {
             var res = _housesService.getHouseById(hid);
@@ -76,12 +81,13 @@ namespace Sojourner.Controllers
                 }
             }
         }
+        [Authorize("adminApi")]
+        [HttpPost("update")]
+        public IActionResult updateHouse(House house)
 
-        [HttpPost("{id}")]
-        public IActionResult updateHouse(string id, House house)
         {
-            if (house.id != null && house.id != id) return BadRequest();
-            if (house.id == null) house.id = id;
+            if (_housesService.getHouseById(house.id) == null)
+                return StatusCode(StatusCodes.Status204NoContent);
 
             var res = _housesService.updateHouse(house);
             if (res != null)

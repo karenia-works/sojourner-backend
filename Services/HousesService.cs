@@ -26,8 +26,10 @@ namespace Sojourner.Services
         public House getHouseById(String id)
         {
             var query = _houses.AsQueryable().
-                Where(o => o.id == id).First();
-            return query;
+                Where(o => o.id == id).Select(house => house);
+            if (query.Count() == 0)
+                return null;
+            else return query.First();
         }
         public List<House> takeAvailableLong()
         {
@@ -130,7 +132,7 @@ namespace Sojourner.Services
 
         public ReplaceOneResult updateHouse(House tar)
         {
-            var res = _houses.ReplaceOne(o=>o.id==tar.id, tar);
+            var res = _houses.ReplaceOne(o => o.id == tar.id, tar);
             return res;
         }
 

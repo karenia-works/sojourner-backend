@@ -15,7 +15,7 @@ using Sojourner.Models;
 using System.Security.Claims;
 using Sojourner.Models.Settings;
 using IdentityServer4;
-using IdentityServer4.Models;
+using IdentityServer4.Stores;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Hosting;
@@ -52,6 +52,8 @@ namespace Sojourner
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
             services.AddSingleton<ImageService>();
+            services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));
+            services.AddSingleton<IDbSettings>(settings => settings.GetRequiredService<IOptions<DbSettings>>().Value);
 
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
@@ -62,19 +64,27 @@ namespace Sojourner
                 AllowedOrigins = new[] { "*" },
                 AllowAll = true
             });
-            services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));
-            services.AddSingleton<IDbSettings>(settings => settings.GetRequiredService<IOptions<DbSettings>>().Value);
+
             services.AddAuthorization(option =>
             {
                 option.AddPolicy(
-                "adminservice", policy =>
+                "adminApi", policy =>
                 {
                     policy.AddAuthenticationSchemes(IdentityServerConstants.LocalApi.AuthenticationScheme);
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("Role", "admin");
                 }
                 );
+                option.AddPolicy(
+                "workerApi", policy =>
+                {
+                    policy.AddAuthenticationSchemes(IdentityServerConstants.LocalApi.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("Role", "worker");
+                }
+                );
             });
+
 
         }
 
