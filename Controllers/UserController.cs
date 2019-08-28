@@ -60,7 +60,7 @@ namespace Sojourner.Controllers
 
 
         //object type: User
-        [HttpPost("{id:regex([[0-9a-fA-F]]{{24}})}")]
+        [HttpPost]
         public IActionResult insertUser(User user_in)
         {
             var tem = _userService.findClearUserName(user_in.username);
@@ -77,7 +77,7 @@ namespace Sojourner.Controllers
 
         }
 
-        [HttpPost()]
+        [HttpPost("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public IActionResult updateUser(User user_in)
         {
             var res = _userService.getUserId(user_in.id);
@@ -94,6 +94,7 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status200OK);
         }
 
+        [HttpGet("workers")]
         public List<User> getWorkerList()
         {
             var result = _userService.getWorker();

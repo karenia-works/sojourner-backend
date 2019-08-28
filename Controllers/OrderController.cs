@@ -21,8 +21,8 @@ namespace Sojourner.Controllers
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
-        [HttpGet("find")]
-        public Order findOrder(string id = "123451234512345123451234")
+        [HttpGet("{id}")]
+        public Order findOrder(string id)
 
         {
             var res = _orderService.getOrderById(id);
@@ -33,6 +33,7 @@ namespace Sojourner.Controllers
             return res;
         }
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+
         // GET api/v1/order/for_user?uid=12345
         [HttpGet("for_user")]
         public List<Order> findUserOrder(string uid = "123451234512345123451234")

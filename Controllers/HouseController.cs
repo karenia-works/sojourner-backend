@@ -49,21 +49,21 @@ namespace Sojourner.Controllers
 
             return res;
         }
-        [Authorize("adminApi")]
-        [HttpGet("insert")]
 
+        [Authorize("adminApi")]
+        [HttpPost]
         public IActionResult insertHouse(House house)
         {
             house.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
             _housesService.insertHouse(house);
             return StatusCode(StatusCodes.Status201Created, new { id = house.id });
         }
-        [Authorize("adminApi")]
-        [HttpGet("delete")]
 
-        public IActionResult deleteHouse(string hid)
+        [Authorize("adminApi")]
+        [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
+        public IActionResult deleteHouse(string id)
         {
-            var res = _housesService.getHouseById(hid);
+            var res = _housesService.getHouseById(id);
             if (res == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "house not exist" });
@@ -81,10 +81,10 @@ namespace Sojourner.Controllers
                 }
             }
         }
-        [Authorize("adminApi")]
-        [HttpPost("update")]
-        public IActionResult updateHouse(House house)
 
+        [Authorize("adminApi")]
+        [HttpPut("{id:regex([[0-9a-fA-F]]{{24}})}")]
+        public IActionResult updateHouse(string id, House house)
         {
             if (_housesService.getHouseById(house.id) == null)
                 return StatusCode(StatusCodes.Status204NoContent);
