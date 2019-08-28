@@ -51,11 +51,12 @@ namespace Sojourner
             services.AddSingleton<OrderService>();
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
+            services.AddSingleton<ImageService>();
 
-            services.AddIdentityServer().
-                AddDeveloperSigningCredential().
-                AddInMemoryClients(config.GetClients()).
-                AddInMemoryApiResources(config.GetApiResources()).AddResourceOwnerValidator<UserStore>();
+            services.AddIdentityServer()
+                .AddDeveloperSigningCredential()
+                .AddInMemoryClients(config.GetClients())
+                .AddInMemoryApiResources(config.GetApiResources()).AddResourceOwnerValidator<UserStore>();
             services.AddSingleton<ICorsPolicyService>(new DefaultCorsPolicyService(new LoggerFactory().CreateLogger<DefaultCorsPolicyService>())
             {
                 AllowedOrigins = new[] { "*" },
@@ -63,16 +64,18 @@ namespace Sojourner
             });
             services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));
             services.AddSingleton<IDbSettings>(settings => settings.GetRequiredService<IOptions<DbSettings>>().Value);
-            services.AddAuthorization(option => {option.AddPolicy(
+            services.AddAuthorization(option =>
+            {
+                option.AddPolicy(
                 "adminservice", policy =>
-                    {
+                {
                     policy.AddAuthenticationSchemes(IdentityServerConstants.LocalApi.AuthenticationScheme);
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("Role","admin");
-                    }
+                    policy.RequireClaim("Role", "admin");
+                }
                 );
             });
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,6 +87,7 @@ namespace Sojourner
             }
 
             app.UseIdentityServer();
+
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
