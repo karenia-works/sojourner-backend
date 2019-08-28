@@ -17,7 +17,9 @@ namespace Sojourner.Services
             var database = client.GetDatabase(settings.DbName);
             this.bucket = new GridFSBucket(database, new GridFSBucketOptions()
             {
-                BucketName = settings.ImageBucketName
+                BucketName = settings.ImageBucketName,
+                ChunkSizeBytes = 5248000,
+
             });
         }
 

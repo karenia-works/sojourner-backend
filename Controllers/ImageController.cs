@@ -46,13 +46,16 @@ namespace Sojourner.Controllers
             {
                 try
                 {
+                    var time = DateTime.Now;
                     id = await _imgService.uploadFileAsync(file.FileName, file.ContentType, fileStream);
+                    var endTime = DateTime.Now;
+                    Console.WriteLine(endTime - time);
                     // successFiles.Add(file.FileName);
                     // fileIds.Add(id.ToString());
                 }
                 catch (Exception e)
                 {
-                    return BadRequest(e.Message);
+                    return BadRequest(e.ToString());
                     // failedFiles.Add(file.FileName);
                     // failReasons.Add(e.Message);
                 }
