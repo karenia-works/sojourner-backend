@@ -9,6 +9,7 @@ namespace Sojourner.Models.Settings
         public string UserCollectionName { get; set; }
         public string HouseCollectionName { get; set; }
         public string OrderCollectionName { get; set; }
+        public string finishedOrderCollectionName { get; set; }
         public string ImageBucketName { get; set; }
     }
 
@@ -20,5 +21,6 @@ namespace Sojourner.Models.Settings
         string HouseCollectionName { get; set; }
         string OrderCollectionName { get; set; }
         public string ImageBucketName { get; set; }
+        string finishedOrderCollectionName { get; set;}
     }
 }
