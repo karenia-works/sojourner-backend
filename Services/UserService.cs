@@ -38,6 +38,17 @@ namespace Sojourner.Services
             }
             return query[0];
         }
+
+        public List<User> getWorker()
+        {
+            var query = _users.AsQueryable().
+            Where(user => user.role =="worker").ToList();
+            if (query.Count==0)
+            {
+                return null;
+            }
+            return query;
+        }
         public List<User> findClearUserName(string keyword)
         {
             var query = _users.AsQueryable().
@@ -52,7 +63,7 @@ namespace Sojourner.Services
             return result;
         }
 
-        public UpdateResult editUser(User user)
+        public UpdateResult updateUser(User user)
         {
             var flicker = Builders<User>.Filter.Eq("id", user.id);
             var update = Builders<User>.Update.Set("username", user.username).Set("password", user.password).Set("role", user.role);

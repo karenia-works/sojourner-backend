@@ -85,7 +85,7 @@ namespace Sojourner.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user not exist" });
             }
-            UpdateResult result = _userService.editUser(user_in);
+            UpdateResult result = _userService.updateUser(user_in);
             if (result != null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "edit error" });
@@ -94,5 +94,14 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status200OK);
         }
 
+        public List<User> getWorkerList()
+        {
+            var result = _userService.getWorker();
+            if (result == null)
+            {
+                NotFound();
+            }
+            return result;
+        }
     }
 }
