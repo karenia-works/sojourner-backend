@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Collections.Generic;
 using Sojourner.Models.Settings;
+using System.Threading.Tasks;
 namespace Sojourner.Services
 {
     public class OrderService
@@ -64,13 +65,14 @@ namespace Sojourner.Services
         }
 
         //修改isFinished
-        public UpdateResult isFinishedChange(string oid)
+        async public Task<Order> isFinishedChange(string oid)
         {
-            var flicker = Builders<Order>.Filter.Eq("id", oid);
-            var update = Builders<Order>.Update.Set("isFinished", true);
-            var res = _orders.UpdateOne(flicker, update);
-
-            return res;
+            var query = _orders.AsQueryable().Where(o => o.id == oid).Select(o => o);
+            if (query.CountAsync().Result == 0)
+                return null;
+            var tar = query.FirstAsync();
+            await _finishedOrders.InsertOneAsync(tar.Result);
+            return tar.Result;
         }
     }
 }

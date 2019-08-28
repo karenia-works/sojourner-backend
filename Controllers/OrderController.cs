@@ -6,6 +6,7 @@ using Sojourner.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using IdentityServer4;
 namespace Sojourner.Controllers
 {
     [Route("api/v1/[controller]")]
@@ -18,7 +19,7 @@ namespace Sojourner.Controllers
         {
             _orderService = orderService;
         }
-
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("find")]
         public Order findOrder(string id = "123451234512345123451234")
         {
@@ -29,7 +30,7 @@ namespace Sojourner.Controllers
             }
             return res;
         }
-
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         // GET api/v1/order/for_user?uid=12345
         [HttpGet("for_user")]
         public List<Order> findUserOrder(string uid = "123451234512345123451234")
@@ -53,7 +54,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
-
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpPost("insert")]
         public IActionResult insertOrder(Order order)
         {
@@ -75,8 +76,8 @@ namespace Sojourner.Controllers
             }
         }
         [Authorize("adminApi")]
-        [HttpPost("/delete")]
-        public IActionResult deleteOrder(string oid)
+        [HttpPost("delete")]
+        public IActionResult deleteOrder(string oid = "123451234512345123451234")
         {
             var res = _orderService.getOrderById(oid);
             if (res == null)
