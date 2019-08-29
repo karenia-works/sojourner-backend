@@ -25,42 +25,43 @@ namespace Sojourner.Controllers
         }
 
         [HttpGet("{id}")]
-        public Issue getIssueById(string id)
+        public async Task<Issue> getIssueById(string id)
         {
-            var res = _issueService.getIssueById(id);
+            var res = await _issueService.getIssueById(id);
             if (res == null)
             {
                 NotFound();
             }
             return res;
         }
-        [HttpPost("insert")]
-        public IActionResult insertIssue(Issue issue)
+
+        [HttpPost]
+        public async Task<IActionResult> insertIssue([FromBody] Issue issue)
         {
             issue.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
-            _issueService.insertIssue(issue);
+            await _issueService.insertIssue(issue);
             return StatusCode(StatusCodes.Status201Created, new { id = issue.id });
         }
-        [HttpPut("update")]
-        public IActionResult replyToComplain(Issue issue)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> replyToComplain(string id, [FromBody] Issue issue)
         {
-            var res = _issueService.replyToComplain(issue.id,issue.reply);
-            if(res == null)
-                return StatusCode(StatusCodes.Status400BadRequest,new { success = false,error = "Reply is failed"});
+            var res = await _issueService.replyToComplain(issue.id, issue.reply);
+            if (res == null)
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Reply is failed" });
             else
                 return StatusCode(StatusCodes.Status200OK);
         }
-        [HttpGet()]
-        public IActionResult sendWorker(Issue issue)
+        [HttpGet("sendWorker")]
+        public async Task<IActionResult> sendWorker(string id, string workerId)
         {
-            var res = _issueService.sendWorker(issue.id,issue.wid);
+            var res = await _issueService.sendWorker(id, workerId);
 
-            if(res == null)
-                return StatusCode(StatusCodes.Status400BadRequest,new { success = false,error = "Send worker fail"});
+            if (res == null)
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Send worker fail" });
             else
                 return StatusCode(StatusCodes.Status200OK);
         }
-        
+
 
     }
 }

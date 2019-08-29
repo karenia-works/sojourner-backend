@@ -22,10 +22,10 @@ namespace Sojourner.Controllers
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("{id}")]
-        public Order findOrder(string id)
+        public async Task<Order> findOrder(string id)
 
         {
-            var res = _orderService.getOrderById(id);
+            var res = await _orderService.getOrderById(id);
             if (res == null)
             {
                 NotFound();
@@ -36,9 +36,9 @@ namespace Sojourner.Controllers
         // GET api/v1/order/for_user?uid=12345
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("for_user")]
-        public List<Order> findUserOrder(string uid = "123451234512345123451234")
+        public async Task<List<Order>> findUserOrder(string uid = "123451234512345123451234")
         {
-            var res = _orderService.findUserOrder(uid);
+            var res = await _orderService.findUserActiveOrder(uid);
             if (res == null)
             {
                 NotFound();
@@ -48,10 +48,10 @@ namespace Sojourner.Controllers
 
 
         [HttpGet("for_house")]
-        public List<Order> findHouseOrder(string oid = "123451234512345123451234")
+        public async Task<List<Order>> findHouseOrder(string oid = "123451234512345123451234")
 
         {
-            var res = _orderService.findHouseOrder(oid);
+            var res = await _orderService.findHouseOrder(oid);
             if (res == null)
             {
                 NotFound();
@@ -62,10 +62,10 @@ namespace Sojourner.Controllers
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpPost()]
-        public IActionResult insertOrder([FromBody]Order order)
+        public async Task<IActionResult> insertOrder([FromBody]Order order)
         {
             order.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
-            var res = _orderService.insertOrder(order);
+            var res = await _orderService.insertOrder(order);
             if (res != false)
             {
                 //insert error
@@ -80,31 +80,24 @@ namespace Sojourner.Controllers
 
         [Authorize("adminApi")]
         [HttpDelete("{id}")]
-        public IActionResult deleteOrder(string id)
+        public async Task<IActionResult> deleteOrder(string id)
         {
-            var res = _orderService.getOrderById(id);
-            if (res == null)
+            var tem = await _orderService.deleteOrder(id);
+            if (tem.DeletedCount != 1)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "order not exist" });
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
             }
             else
             {
-                var tem = _orderService.deleteOrder(res);
-                if (tem.DeletedCount != 1)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status200OK);
-                }
+                return StatusCode(StatusCodes.Status200OK);
             }
+
         }
 
         [HttpGet("{oid}/setFinished")]
-        public IActionResult isFinishedChange(string oid)
+        public async Task<IActionResult> isFinishedChange(string oid)
         {
-            var res = _orderService.isFinishedChange(oid);
+            var res = await _orderService.isFinishedChange(oid);
             if (res == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "update isFinished failed" });

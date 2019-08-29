@@ -11,6 +11,7 @@ namespace Sojourner.Models
         public string id { get; set; }
         [BsonRepresentation(BsonType.ObjectId)]
         public string wid { get; set; }//维修师傅
+        [BsonRepresentation(BsonType.ObjectId)]
         public string[] img { get; set; }
         public string complaint { get; set; }
         public bool needRepair { get; set; }//是否需要报修
