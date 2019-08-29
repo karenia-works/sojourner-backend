@@ -19,7 +19,7 @@ namespace Sojourner.Controllers
             _orderService = orderService;
         }
         // GET api/values
-        [Authorize("adminservice")]
+        [Authorize("adminApi")]
         [HttpGet("admin")]
         public ActionResult<IEnumerable<string>> test()
         {

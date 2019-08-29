@@ -9,7 +9,9 @@ namespace Sojourner.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
         public string houseId { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
         public string userId { get; set; }
         public DateTime startDate { get; set; }//入住时间
         public DateTime endDate { get; set; }//退住时间

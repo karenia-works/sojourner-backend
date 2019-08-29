@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using IdentityServer4;
-
 namespace Sojourner.Controllers
 {
     [Route("api/v1/[controller]")]
@@ -24,6 +23,7 @@ namespace Sojourner.Controllers
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("{id}")]
         public Order findOrder(string id)
+
         {
             var res = _orderService.getOrderById(id);
             if (res == null)
@@ -46,8 +46,10 @@ namespace Sojourner.Controllers
             return res;
         }
 
+
         [HttpGet("for_house")]
-        public List<Order> findHouseOrder(string oid)
+        public List<Order> findHouseOrder(string oid = "123451234512345123451234")
+
         {
             var res = _orderService.findHouseOrder(oid);
             if (res == null)
@@ -57,8 +59,10 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [HttpGet("insert")]
-        public IActionResult insertOrder(Order order)
+
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpPost()]
+        public IActionResult insertOrder([FromBody]Order order)
         {
             order.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
             var res = _orderService.insertOrder(order);
@@ -73,10 +77,12 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status201Created, order.id);
             }
         }
-        [HttpGet("delete")]
-        public IActionResult deleteOrder(string oid)
+
+        [Authorize("adminApi")]
+        [HttpDelete("{id}")]
+        public IActionResult deleteOrder(string id)
         {
-            var res = _orderService.getOrderById(oid);
+            var res = _orderService.getOrderById(id);
             if (res == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "order not exist" });
@@ -95,12 +101,13 @@ namespace Sojourner.Controllers
             }
         }
 
-        public IActionResult isFinishedChange(Order order)
+        [HttpGet("{oid}/setFinished")]
+        public IActionResult isFinishedChange(string oid)
         {
-            var res = _orderService.isFinishedChange(order.id);
-            if(res == null)
+            var res = _orderService.isFinishedChange(oid);
+            if (res == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest,new { success = false,error = "update isFinished failed"});
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "update isFinished failed" });
             }
             else
             {

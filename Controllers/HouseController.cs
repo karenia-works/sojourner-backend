@@ -5,12 +5,14 @@ using Sojourner.Models;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using IdentityServer4;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
 using MongoDB;
-
+using Sojourner.Models.Settings;
+using Sojourner.Store;
 namespace Sojourner.Controllers
 {
     [Route("api/v1/[controller]")]
@@ -24,8 +26,9 @@ namespace Sojourner.Controllers
 
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public House getHouseById(string id)
+
         {
             var res = _housesService.getHouseById(id);
             if (res == null)
@@ -47,7 +50,8 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [HttpPost("insert")]
+        [Authorize("adminApi")]
+        [HttpPost]
         public IActionResult insertHouse(House house)
         {
             house.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
@@ -55,10 +59,11 @@ namespace Sojourner.Controllers
             return StatusCode(StatusCodes.Status201Created, new { id = house.id });
         }
 
-        [HttpDelete("delete")]
-        public IActionResult deleteHouse(string hid)
+        [Authorize("adminApi")]
+        [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
+        public IActionResult deleteHouse(string id)
         {
-            var res = _housesService.getHouseById(hid);
+            var res = _housesService.getHouseById(id);
             if (res == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "house not exist" });
@@ -77,9 +82,13 @@ namespace Sojourner.Controllers
             }
         }
 
-        [HttpPost("update")]
-        public IActionResult updateHouse(House house)
+        [Authorize("adminApi")]
+        [HttpPut("{id:regex([[0-9a-fA-F]]{{24}})}")]
+        public IActionResult updateHouse(string id, House house)
         {
+            if (_housesService.getHouseById(house.id) == null)
+                return StatusCode(StatusCodes.Status204NoContent);
+
             var res = _housesService.updateHouse(house);
             if (res != null)
             {
@@ -90,8 +99,5 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status200OK);
             }
         }
-
-
-
     }
 }

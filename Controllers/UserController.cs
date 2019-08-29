@@ -25,7 +25,7 @@ namespace Sojourner.Controllers
         }
 
         //object type: string
-        [HttpGet("/{id:regex([[0-9a-fA-F]]{{24}})}")]
+        [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public User getUserId(string id)
         {
             var res = _userService.getUserId(id);
@@ -37,7 +37,7 @@ namespace Sojourner.Controllers
         }
 
         //object type: string
-        [HttpDelete("/{id:regex([[0-9a-fA-F]]{{24}})}")]
+        [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public IActionResult deleteUser(string id)
         {
             var res = _userService.getUserId(id);
@@ -60,11 +60,11 @@ namespace Sojourner.Controllers
 
 
         //object type: User
-        [HttpPost("/{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public IActionResult insertUser(User user_in)
+        [HttpPost]
+        public IActionResult insertUser([FromBody] User user_in)
         {
             var tem = _userService.findClearUserName(user_in.username);
-            if (tem != null)
+            if (tem != null && tem.Count != 0)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user already exist" });
             }
@@ -74,18 +74,17 @@ namespace Sojourner.Controllers
                 _userService.insertUser(user_in);
                 return StatusCode(StatusCodes.Status201Created);
             }
-
         }
 
-        [HttpPost()]
-        public IActionResult updateUser(User user_in)
+        [HttpPost("{id:regex([[0-9a-fA-F]]{{24}})}")]
+        public IActionResult updateUser([FromBody]User user_in)
         {
             var res = _userService.getUserId(user_in.id);
             if (res == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user not exist" });
             }
-            UpdateResult result = _userService.editUser(user_in);
+            UpdateResult result = _userService.updateUser(user_in);
             if (result != null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "edit error" });
@@ -94,5 +93,15 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status200OK);
         }
 
+        [HttpGet("workers")]
+        public List<User> getWorkerList()
+        {
+            var result = _userService.getWorker();
+            if (result == null)
+            {
+                NotFound();
+            }
+            return result;
+        }
     }
 }
