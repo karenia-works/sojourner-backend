@@ -57,9 +57,10 @@ namespace Sojourner.Services
         public async Task<UpdateResult> updateProfile(Profile profile)
         {
             var flicker = Builders<Profile>.Filter.Eq("userId", profile.userId);
-            var update = Builders<Profile>.Update.Set("userName", profile.userName)
-                .Set("sex", profile.sex).Set("email", profile.email)
-                .Set("phoneNumber", profile.phoneNumber).Set("avatar", profile.avatar);
+            var update = Builders<Profile>
+                .Update.Set("userName", profile.userName).Set("sex", profile.sex)
+                .Set("email", profile.email).Set("phoneNumber", profile.phoneNumber)
+                .Set("avatar", profile.avatar).Set("role", profile.role);
             var result = await _profile.UpdateOneAsync(flicker, update);
             return result;
         }
