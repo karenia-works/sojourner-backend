@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 namespace Sojourner.Models
 {
@@ -9,6 +10,11 @@ namespace Sojourner.Models
         public string country;
         public string city;
         public string street;
+
+        public Address()
+        {
+            BsonClassMap.RegisterClassMap<Address>();
+        }
     }
 
     public class House
