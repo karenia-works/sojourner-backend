@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using IdentityServer4;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Sojourner.Controllers
 {
@@ -22,6 +24,16 @@ namespace Sojourner.Controllers
         public UserController(UserService userService)
         {
             _userService = userService;
+        }
+
+        [HttpGet("me")]
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        public async Task<IActionResult> getMe()
+        {
+            // var user = User.IsInRole("admin");
+            var userId = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
+            var user = await _userService.getUserId(userId);
+            return Ok(new { user.id, user.username, user.role });
         }
 
         //object type: string
