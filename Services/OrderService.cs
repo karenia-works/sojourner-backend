@@ -58,6 +58,11 @@ namespace Sojourner.Services
                 return await query.FirstOrDefaultAsync();
 
         }
+        public async Task<List<Order>> getAllOrder()
+        {
+            var query = await _orders.AsQueryable().ToListAsync();
+            return query;
+        }
         public async ValueTask<bool> insertOrder(Order tar)
         {
             await _orders.InsertOneAsync(tar);

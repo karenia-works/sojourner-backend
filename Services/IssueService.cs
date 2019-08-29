@@ -1,10 +1,13 @@
 using System;
 using Sojourner.Models;
 using MongoDB.Driver;
+using MongoDB.Bson;
 using MongoDB.Driver.Linq;
 using System.Collections.Generic;
 using Sojourner.Models.Settings;
 using System.Threading.Tasks;
+
+
 
 namespace Sojourner.Services
 {
@@ -21,6 +24,18 @@ namespace Sojourner.Services
         {
             var query = await _issues.AsQueryable().
                 Where(o => o.id == id).FirstOrDefaultAsync();
+            return query;
+        }
+        public async Task<List<Issue>> getIssueListByUid(string uid)
+        {
+            var query = await _issues.AsQueryable().
+                Where(o => o.uid == uid).ToListAsync();
+            return query;
+        }
+        public async Task<List<Issue>> getIssueListByWid(string wid)
+        {
+            var query = await _issues.AsQueryable().
+                Where(o => o.wid == wid).ToListAsync();
             return query;
         }
         public async ValueTask<bool> insertIssue(Issue tar)
@@ -44,6 +59,12 @@ namespace Sojourner.Services
             var res = await _issues.UpdateOneAsync(flicker, update);
 
             return res;
+        }
+
+        public async Task<List<Issue>> getUnFinishedIssueList()
+        {
+            var query = await _issues.AsQueryable().OrderByDescending(o => o.createTime).ToListAsync();
+            return query;
         }
 
     }
