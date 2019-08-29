@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using IdentityServer4;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Sojourner.Controllers
 {
@@ -24,9 +26,19 @@ namespace Sojourner.Controllers
             _userService = userService;
         }
 
+        [HttpGet("me")]
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        public async Task<IActionResult> getMe()
+        {
+            // var user = User.IsInRole("admin");
+            var userId = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
+            var user = await _userService.getUserId(userId);
+            return Ok(new { user.id, user.username, user.role });
+        }
+
         //object type: string
         [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public async Task< User> getUserId(string id)
+        public async Task<User> getUserId(string id)
         {
             var res = await _userService.getUserId(id);
             if (res == null)
@@ -37,9 +49,11 @@ namespace Sojourner.Controllers
         }
 
         [HttpGet("{username}")]
-        public async Task<User> getUserByUserName(string userName){
+        public async Task<User> getUserByUserName(string userName)
+        {
             var res = await _userService.findClearUserName(userName);
-            if(res == null){ 
+            if (res == null)
+            {
                 NotFound();
                 //return StatusCode(StatusCodes.Status404NotFound, new {success = false, error = "user not exist"});
             }
@@ -74,7 +88,7 @@ namespace Sojourner.Controllers
         public async Task<IActionResult> insertUser([FromBody] User user_in)
         {
             var tem = await _userService.findClearUserName(user_in.username);
-            if (tem != null )
+            if (tem != null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user already exist" });
             }
