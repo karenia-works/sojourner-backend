@@ -11,6 +11,7 @@ namespace Sojourner.Models.Settings
         public string OrderCollectionName { get; set; }
         public string finishedOrderCollectionName { get; set; }
         public string ImageBucketName { get; set; }
+        public string ProfileCollectionName { get; set; }
     }
 
     public interface IDbSettings
@@ -20,7 +21,8 @@ namespace Sojourner.Models.Settings
         string UserCollectionName { get; set; }
         string HouseCollectionName { get; set; }
         string OrderCollectionName { get; set; }
-        public string ImageBucketName { get; set; }
-        string finishedOrderCollectionName { get; set;}
+        string ProfileCollectionName { get; set; }
+        string ImageBucketName { get; set; }
+        string finishedOrderCollectionName { get; set; }
     }
 }

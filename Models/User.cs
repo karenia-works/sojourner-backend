@@ -12,6 +12,7 @@ namespace Sojourner.Models
         public string id { get; set; }
         public string username { get; set; }//username here refers to email!!!!
                                             //not nickname
+
         public string password { get; set; }
         public string role { get; set; }
         public byte[] key { get; set; }
