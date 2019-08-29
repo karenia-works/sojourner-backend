@@ -35,6 +35,23 @@ namespace Sojourner.Controllers
             return res;
         }
 
+        [HttpGet("IssueByUid")]
+        public async Task<List<Issue>> getIssueListByUid(string uid)
+        {
+            var res = await _issueService.getIssueListByUid(uid);
+            if(res == null)
+                NotFound();
+            return res;
+        }
+        [HttpGet("IssueByWid")]
+        public async Task<List<Issue>> getIssueListByWid(string wid)
+        {
+            var res = await _issueService.getIssueListByWid(wid);
+            if(res == null)
+                NotFound();
+            return res;
+        }
+
         [HttpPost]
         public async Task<IActionResult> insertIssue([FromBody] Issue issue)
         {
@@ -61,7 +78,15 @@ namespace Sojourner.Controllers
             else
                 return StatusCode(StatusCodes.Status200OK);
         }
-
+        [HttpGet("unFinishedIssue")]
+        public async Task<IActionResult> getUnFinishedIssueList()
+        {
+            var res = await _issueService.getUnFinishedIssueList();
+            if (res == null)
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Get unfinished issue fail" });
+            else
+                return StatusCode(StatusCodes.Status200OK);
+        }
 
     }
 }

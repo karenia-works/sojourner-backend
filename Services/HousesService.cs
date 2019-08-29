@@ -29,6 +29,11 @@ namespace Sojourner.Services
                 Where(o => o.id == id).FirstOrDefaultAsync();
             return query;
         }
+        public async Task<List<House>> getHouseList()
+        {
+            var query = await _houses.AsQueryable().ToListAsync();
+            return query;
+        }
         public async Task<List<House>> takeAvailableLong()
         {
             var query = await _houses.AsQueryable().
@@ -130,7 +135,6 @@ namespace Sojourner.Services
             var res = await _houses.ReplaceOneAsync(o => o.id == tar.id, tar);
             return res;
         }
-
 
     }
 }
