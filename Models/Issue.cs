@@ -20,7 +20,8 @@ namespace Sojourner.Models
         public string complaint { get; set; }
         public bool needRepair { get; set; }//是否需要报修
         public string reply{get;set;}
-        public bool isReplied{get;set;}
+        public bool isReplied{get;set;}//是否已回复投诉
+        public bool isFinished{get;set;}//是否已解决该工单
         public DateTime createTime{get;set;}//报修单创建时间
     }
 }
