@@ -53,6 +53,7 @@ namespace Sojourner
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
             services.AddSingleton<ImageService>();
+            services.AddSingleton<ProfileService>();
             services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));
             services.AddSingleton<IDbSettings>(settings => settings.GetRequiredService<IOptions<DbSettings>>().Value);
             services.AddSingleton<CheckService>();

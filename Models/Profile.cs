@@ -10,7 +10,9 @@ namespace Sojourner.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string userId{ get; set;}
+        public string id{ get; set;}//sex: M(ale)/F(emale)/U(nknown)
+
+        // public string userId{ get; set;}
         public string sex{ get; set;}//sex: M(ale)/F(emale)/U(nknown)
         public DateTime signupDate{ get; set;}
         public string userName{get; set;}//username = nickname
@@ -22,5 +24,7 @@ namespace Sojourner.Models
         public string avatar{get; set;}
 
         public string role{get; set;}//worker admin IdentityServerApi
+
+        public bool isRenting{get; set;}
     }
 }

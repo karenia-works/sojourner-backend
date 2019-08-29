@@ -24,21 +24,21 @@ namespace Sojourner.Services
 
         public async Task<List<Profile>> getProfileList()
         {
-            var query = await _profile.AsQueryable().OrderByDescending(p => p.userName).ToListAsync();
+            var query = await _profile.AsQueryable().OrderBy(p => p.userName).ToListAsync();
             return query;
         }
 
-        public async Task<Profile> getProfileById(string id_in)
-        {
-            var query = await _profile.AsQueryable().
-                Where(p => p.userId == id_in).FirstOrDefaultAsync();
-            return query;
-        }
+        // public async Task<Profile> getProfileById(string id_in)
+        // {
+        //     var query = await _profile.AsQueryable().
+        //         Where(p => p.userId == id_in).FirstOrDefaultAsync();
+        //     return query;
+        // }
 
-        public async Task<Profile> getProfileByUserName(string userName_in)
+        public async Task<Profile> getProfileByEmail(string userName_in)
         {
             var query = await _profile.AsQueryable().
-                Where(p => p.userName == userName_in).FirstOrDefaultAsync();
+                Where(p => p.email == userName_in).FirstOrDefaultAsync();
             return query;
         }
 
@@ -48,19 +48,19 @@ namespace Sojourner.Services
             return true;
         }
 
-        public async Task<DeleteResult> deleteProfile(string id)
+        public async Task<DeleteResult> deleteProfile(string email)
         {
-            var res = await _profile.DeleteOneAsync(p => p.userId == id);
+            var res = await _profile.DeleteOneAsync(p => p.email == email);
             return res;
         }
 
         public async Task<UpdateResult> updateProfile(Profile profile)
         {
-            var flicker = Builders<Profile>.Filter.Eq("userId", profile.userId);
+            var flicker = Builders<Profile>.Filter.Eq("email", profile.email);
             var update = Builders<Profile>
                 .Update.Set("userName", profile.userName).Set("sex", profile.sex)
-                .Set("email", profile.email).Set("phoneNumber", profile.phoneNumber)
-                .Set("avatar", profile.avatar).Set("role", profile.role);
+                .Set("phoneNumber", profile.phoneNumber).Set("avatar", profile.avatar)
+                .Set("role", profile.role).Set("isRenting", profile.isRenting);
             var result = await _profile.UpdateOneAsync(flicker, update);
             return result;
         }
