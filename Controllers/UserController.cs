@@ -103,7 +103,7 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user not exist" });
             }
             UpdateResult result = await _userService.updateUser(user_in);
-            if (result != null)
+            if (result == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "edit error" });
             }

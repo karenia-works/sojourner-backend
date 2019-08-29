@@ -10,7 +10,7 @@ namespace Sojourner.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string id{ get; set;}//sex: M(ale)/F(emale)/U(nknown)
+        public string id{ get; set;}
 
         // public string userId{ get; set;}
         public string sex{ get; set;}//sex: M(ale)/F(emale)/U(nknown)

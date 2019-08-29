@@ -83,7 +83,7 @@ namespace Sojourner.Controllers
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
-        [HttpPost("{id}")]
+        [HttpPut("{email}")]
         public async Task<IActionResult> updateProfile(string email, [FromBody]Profile user_in)
         {
             if (email != user_in.email)
@@ -98,7 +98,7 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user profile not exist" });
             }
             UpdateResult result = await _profileService.updateProfile(user_in);
-            if (result != null)
+            if (result.ModifiedCount == 0)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "edit profile error" });
             }
