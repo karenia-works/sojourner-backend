@@ -83,7 +83,7 @@ namespace Sojourner.Controllers
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
-        [HttpPost("{id}")]
+        [HttpPost("{email}")]
         public async Task<IActionResult> updateProfile(string email, [FromBody]Profile user_in)
         {
             if (email != user_in.email)
