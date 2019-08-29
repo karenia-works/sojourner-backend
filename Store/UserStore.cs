@@ -18,25 +18,26 @@ namespace Sojourner.Store
         }
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-            var result = await _userservice.findUser(context.UserName, context.Password);
-            if (result == null)
+            var result = await _userservice.findUser(context.UserName);
+            if (result == null || result.checkPassword(context.Password))
             {
                 context.Result = new GrantValidationResult(
-                TokenRequestErrors.InvalidGrant,
-                "invaild");
+                    TokenRequestErrors.InvalidGrant,
+                    "Username and password do not match");
                 return;
             }
-            context.Result = new GrantValidationResult(
-                subject: result.id,
-                authenticationMethod: "custom",
-                claims: new Claim[]{
+            else
+            {
+                context.Result = new GrantValidationResult(
+                    subject: result.id,
+                    authenticationMethod: "custom",
+                    claims: new Claim[]{
                     new Claim("id",result.id),
                     new Claim("username",result.username),
                     new Claim("Role",result.role)
-                }
-                
-            );
-
+                    }
+                );
+            }
         }
     }
 }
