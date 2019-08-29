@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using IdentityServer4;
 using System.Linq;
+using MongoDB.Bson;
 
 namespace Sojourner.Controllers
 {
@@ -127,6 +129,13 @@ namespace Sojourner.Controllers
             {
                 return StatusCode(StatusCodes.Status200OK);
             }
+        }
+
+        // [Authorize("adminApi")]
+        [HttpGet("orderView")]
+        public async Task<IActionResult> adminOrderView()
+        {
+            return Ok(await _orderService.getAdminOrderPage());
         }
     }
 }

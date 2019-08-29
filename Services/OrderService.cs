@@ -5,6 +5,8 @@ using MongoDB.Driver.Linq;
 using System.Collections.Generic;
 using Sojourner.Models.Settings;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+
 namespace Sojourner.Services
 {
     public class OrderService
@@ -96,5 +98,39 @@ namespace Sojourner.Services
             return await query.ToListAsync();
         }
 
+        public class ExtendedOrder : Order
+        {
+            public House house;
+        }
+
+        async public Task<List<ExtendedOrder>> getAdminOrderPage()
+        {
+            var queryDefinition = new BsonDocument[]
+            {
+                new BsonDocument("$lookup",
+                new BsonDocument
+                    {
+                        { "from", "houses" },
+                        { "localField", "houseId" },
+                        { "foreignField", "_id" },
+                        { "as", "house" }
+                    }),
+                new BsonDocument("$unwind",
+                new BsonDocument
+                    {
+                        { "path", "$house" },
+                        { "preserveNullAndEmptyArrays", true }
+                    })
+            };
+
+            var ordersView = await _orders.AggregateAsync(
+                PipelineDefinition<Order, ExtendedOrder>
+                .Create(
+                    queryDefinition
+                )
+            );
+
+            return await ordersView.ToListAsync();
+        }
     }
 }
