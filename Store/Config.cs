@@ -23,7 +23,8 @@ namespace Sojourner.Store
                     },
                     AllowedScopes=new []{IdentityServer4.IdentityServerConstants.LocalApi.ScopeName},
                     // AllowedCorsOrigins=new[]{"*"}
-
+                    AccessTokenLifetime=3600*24,
+                    RefreshTokenUsage=TokenUsage.ReUse
                 },
 
             };
