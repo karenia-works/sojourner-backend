@@ -44,13 +44,13 @@ namespace Sojourner.Services
         {
             const string _ordersName = "orders";
 
-            List<BsonElement> searchOrOption = new List<BsonElement>();
+            List<BsonDocument> searchOrOption = new List<BsonDocument>();
 
             if (includeLongRent)
-                searchOrOption.Add(new BsonElement("longAvailable", true));
+                searchOrOption.Add(new BsonDocument("longAvailable", true));
 
             if (inclideShortRent)
-                searchOrOption.Add(new BsonElement("shortAvailable", true));
+                searchOrOption.Add(new BsonDocument("shortAvailable", true));
 
 
             BsonDocument[] stages = new BsonDocument[]
@@ -68,7 +68,7 @@ namespace Sojourner.Services
                         }),
                         new BsonDocument(
                             "$or",
-                            new BsonDocument(searchOrOption)
+                            new BsonArray(searchOrOption)
                         )
                     }
                 )),
