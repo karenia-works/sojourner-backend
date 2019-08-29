@@ -60,7 +60,7 @@ namespace Sojourner.Controllers
 
         [Authorize("adminApi")]
         [HttpPost]
-        public async Task<IActionResult> insertHouse(House house)
+        public async Task<IActionResult> insertHouse([FromBody]House house)
         {
             house.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
             await _housesService.insertHouse(house);
@@ -84,7 +84,7 @@ namespace Sojourner.Controllers
 
         [Authorize("adminApi")]
         [HttpPut("{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public async Task<IActionResult> updateHouse(string id, House house)
+        public async Task<IActionResult> updateHouse(string id, [FromBody]House house)
         {
             if (await _housesService.getHouseById(house.id) == null)
                 return StatusCode(StatusCodes.Status204NoContent);

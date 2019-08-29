@@ -119,6 +119,5 @@ namespace Sojourner.Services
             return res;
         }
 
-
     }
 }
