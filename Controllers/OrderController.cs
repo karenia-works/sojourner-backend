@@ -135,9 +135,9 @@ namespace Sojourner.Controllers
 
         // [Authorize("adminApi")]
         [HttpGet("orderView")]
-        public async Task<IActionResult> adminOrderView()
+        public async Task<IActionResult> adminOrderView(string kw = "")
         {
-            var result = await _orderService.getAdminOrderPage();
+            var result = await _orderService.getAdminOrderPage(kw);
             var resultJson = result.ToJson();
             return Ok(result);
             //     ok.ContentTypes.Clear();

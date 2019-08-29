@@ -103,7 +103,7 @@ namespace Sojourner.Services
             public House house { get; set; }
         }
 
-        async public Task<List<ExtendedOrder>> getAdminOrderPage()
+        async public Task<List<ExtendedOrder>> getAdminOrderPage(string kw)
         {
             var queryDefinition = new BsonDocument[]
             {
@@ -120,7 +120,13 @@ namespace Sojourner.Services
                     {
                         { "path", "$house" },
                         { "preserveNullAndEmptyArrays", true }
-                    })
+                    }),
+                new BsonDocument("$match",
+                new BsonDocument
+                    {
+                        {"name", new BsonRegularExpression(kw)}
+                    }
+                )
             };
 
             var ordersView = await _orders.AggregateAsync(
