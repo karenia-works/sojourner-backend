@@ -37,7 +37,6 @@ namespace Sojourner.Controllers
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("for_user")]
         public List<Order> findUserOrder(string uid = "123451234512345123451234")
-
         {
             var res = _orderService.findUserOrder(uid);
             if (res == null)
@@ -65,11 +64,7 @@ namespace Sojourner.Controllers
         [HttpPost()]
         public IActionResult insertOrder([FromBody]Order order)
         {
-            if (order.id == null)
-            {
-                order.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
-            }
-
+            order.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
             var res = _orderService.insertOrder(order);
             if (res != false)
             {

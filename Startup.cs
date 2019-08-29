@@ -15,6 +15,7 @@ using Sojourner.Models;
 using System.Security.Claims;
 using Sojourner.Models.Settings;
 using IdentityServer4;
+using IdentityServer4.Models;
 using IdentityServer4.Stores;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;

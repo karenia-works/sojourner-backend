@@ -1,10 +1,10 @@
+using System;
 using Sojourner.Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Collections.Generic;
 using Sojourner.Models.Settings;
 using System.Threading.Tasks;
-using System;
 namespace Sojourner.Services
 {
     public class OrderService
@@ -75,6 +75,11 @@ namespace Sojourner.Services
             await _finishedOrders.InsertOneAsync(tar.Result);
             return tar.Result;
         }
+
+        // public DateTime calCancelDate(DateTime ct)
+        // {
+            
+        // }
         async public Task<List<Order>> checkOrderDate(DateTime checkDate)
         {
             var query = _orders.AsQueryable().Where(order => order.endDate >= checkDate).Select(Order => Order);
