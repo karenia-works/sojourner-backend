@@ -3,13 +3,21 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 namespace Sojourner.Models
 {
+
+    public class Address
+    {
+        public string country;
+        public string city;
+        public string street;
+    }
+
     public class House
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string id { get; set; }
         public string name { get; set; }
-        public string address { get; set; }
+        public Address address { get; set; }
         public string description { get; set; }//mk?
         public bool[] equipJudge { get; set; }//8个
         public string type { get; set; }//124
