@@ -11,7 +11,7 @@ namespace Sojourner.Models
         public string city;
         public string street;
 
-        public Address()
+        static Address()
         {
             BsonClassMap.RegisterClassMap<Address>();
         }
