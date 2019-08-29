@@ -20,5 +20,7 @@ namespace Sojourner.Models
 
         public string phoneNumber{get; set;}
         public string avatar{get; set;}
+
+        public string role{get; set;}//worker admin IdentityServerApi
     }
 }

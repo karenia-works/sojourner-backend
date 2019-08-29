@@ -32,9 +32,9 @@ namespace Sojourner.Store
                     subject: result.id,
                     authenticationMethod: "custom",
                     claims: new Claim[]{
-                    new Claim("id",result.id),
-                    new Claim("username",result.username),
-                    new Claim("Role",result.role)
+                        new Claim("id", result.id),
+                        new Claim("user", result.username),
+                        new Claim("Role", result.role)
                     }
                 );
             }
