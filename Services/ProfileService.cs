@@ -4,6 +4,7 @@ using MongoDB.Driver.Linq;
 using System.Collections.Generic;
 using Sojourner.Models.Settings;
 using Sojourner.Models;
+using System.Threading.Tasks;
 
 namespace Sojourner.Services
 
@@ -21,45 +22,45 @@ namespace Sojourner.Services
             _profile = database.GetCollection<Profile>(settings.ProfileCollectionName);
         }
 
-        public List<Profile> getProfileList()
+        public async Task<List<Profile>> getProfileList()
         {
-            var query = _profile.AsQueryable().OrderByDescending(p => p.userName);
-            return query.ToList();
-        }
-
-        public Profile getProfileById(string id_in)
-        {
-            var query = _profile.AsQueryable().
-                Where(p => p.userId == id_in).FirstOrDefault();
+            var query = await _profile.AsQueryable().OrderByDescending(p => p.userName).ToListAsync();
             return query;
         }
 
-        public Profile getProfileByUserName(string userName_in)
+        public async Task<Profile> getProfileById(string id_in)
         {
-            var query = _profile.AsQueryable().
-                Where(p => p.userName == userName_in).FirstOrDefault();
+            var query = await _profile.AsQueryable().
+                Where(p => p.userId == id_in).FirstOrDefaultAsync();
             return query;
         }
 
-        public bool insertProfile(Profile tar)
+        public async Task<Profile> getProfileByUserName(string userName_in)
         {
-            _profile.InsertOne(tar);
+            var query = await _profile.AsQueryable().
+                Where(p => p.userName == userName_in).FirstOrDefaultAsync();
+            return query;
+        }
+
+        public async ValueTask<bool> insertProfile(Profile tar)
+        {
+            await _profile.InsertOneAsync(tar);
             return true;
         }
 
-        public DeleteResult deleteProfile(Profile tar)
+        public async Task<DeleteResult> deleteProfile(string id)
         {
-            var res = _profile.DeleteOne(p => p.userId == tar.userId);
+            var res = await _profile.DeleteOneAsync(p => p.userId == id);
             return res;
         }
 
-        public UpdateResult updateProfile(Profile profile)
+        public async Task<UpdateResult> updateProfile(Profile profile)
         {
             var flicker = Builders<Profile>.Filter.Eq("userId", profile.userId);
             var update = Builders<Profile>.Update.Set("userName", profile.userName)
                 .Set("sex", profile.sex).Set("email", profile.email)
                 .Set("phoneNumber", profile.phoneNumber).Set("avatar", profile.avatar);
-            var result = _profile.UpdateOne(flicker, update);
+            var result = await _profile.UpdateOneAsync(flicker, update);
             return result;
         }
     }

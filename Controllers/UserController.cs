@@ -64,21 +64,13 @@ namespace Sojourner.Controllers
         [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> deleteUser(string id)
         {
-            var res = await _userService.getUserId(id);
-            if (res == null)
+            var tem = await _userService.deleteUser(id);
+            if (tem.DeletedCount != 1)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user not exist" });
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
             }
             else
-            {
-                var tem = await _userService.deleteUser(res);
-                if (tem.DeletedCount != 1)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
-                }
-                else
-                    return StatusCode(StatusCodes.Status200OK);
-            }
+                return StatusCode(StatusCodes.Status200OK);
 
         }
 
