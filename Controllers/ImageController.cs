@@ -80,7 +80,7 @@ namespace Sojourner.Controllers
             }
             catch (GridFSFileNotFoundException e)
             {
-                return new NotFoundResult();
+                return NotFound(e.Message);
             }
         }
 
@@ -94,7 +94,7 @@ namespace Sojourner.Controllers
             }
             catch (GridFSFileNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
         }
     }
