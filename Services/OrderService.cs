@@ -124,7 +124,7 @@ namespace Sojourner.Services
                 new BsonDocument("$match",
                 new BsonDocument
                     {
-                        {"name", new BsonRegularExpression(kw)}
+                        {"house.name", new BsonRegularExpression(kw, "i")}
                     }
                 )
             };
