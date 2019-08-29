@@ -26,7 +26,7 @@ namespace Sojourner.Controllers
 
         //object type: string
         [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public async Task< User> getUserId(string id)
+        public async Task<User> getUserId(string id)
         {
             var res = await _userService.getUserId(id);
             if (res == null)
@@ -37,9 +37,11 @@ namespace Sojourner.Controllers
         }
 
         [HttpGet("{username}")]
-        public async Task<User> getUserByUserName(string userName){
+        public async Task<User> getUserByUserName(string userName)
+        {
             var res = await _userService.findClearUserName(userName);
-            if(res == null){ 
+            if (res == null)
+            {
                 NotFound();
                 //return StatusCode(StatusCodes.Status404NotFound, new {success = false, error = "user not exist"});
             }
@@ -50,21 +52,13 @@ namespace Sojourner.Controllers
         [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> deleteUser(string id)
         {
-            var res = await _userService.getUserId(id);
-            if (res == null)
+            var tem = await _userService.deleteUser(id);
+            if (tem.DeletedCount != 1)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user not exist" });
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
             }
             else
-            {
-                var tem = await _userService.deleteUser(res);
-                if (tem.DeletedCount != 1)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
-                }
-                else
-                    return StatusCode(StatusCodes.Status200OK);
-            }
+                return StatusCode(StatusCodes.Status200OK);
 
         }
 
@@ -74,7 +68,7 @@ namespace Sojourner.Controllers
         public async Task<IActionResult> insertUser([FromBody] User user_in)
         {
             var tem = await _userService.findClearUserName(user_in.username);
-            if (tem != null )
+            if (tem != null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user already exist" });
             }

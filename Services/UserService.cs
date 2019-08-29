@@ -76,9 +76,9 @@ namespace Sojourner.Services
             return query;
         }
 
-        public async Task<DeleteResult> deleteUser(User tar)
+        public async Task<DeleteResult> deleteUser(string id)
         {
-            var result = await _users.DeleteOneAsync(o => o.id == tar.id);
+            var result = await _users.DeleteOneAsync(o => o.id == id);
             return result;
         }
 
