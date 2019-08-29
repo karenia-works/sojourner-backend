@@ -24,26 +24,50 @@ namespace Sojourner.Services
             return query;
         }
 
-        public void insertUser(User tar)
+        public async Task insertUser(User tar)
         {
-            _users.InsertOne(tar);
+            // This work is done before insert, and also before any password updates
+            tar.hashMyPassword();
+            await _users.InsertOneAsync(tar);
         }
-        public async Task<User> findUser(string username, string password)
+
+        public async ValueTask<bool> updatePassword(string username, string password)
+        {
+            var foundUser = await _users.AsQueryable()
+                .Where(user => user.username == username).FirstOrDefaultAsync();
+            if (foundUser == null)
+            {
+                return false;
+            }
+            else
+            {
+                foundUser.password = password;
+                foundUser.hashMyPassword();
+
+                var replaceResult = await _users.ReplaceOneAsync((user) => user.username == username, foundUser);
+
+                return replaceResult.IsAcknowledged && replaceResult.ModifiedCount > 0;
+            }
+        }
+
+        /// <summary>
+        /// Find the user account matching specified username. If nothing matches,
+        /// returns null.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public async Task<User> findUser(string username)
         {
             var query = await _users.AsQueryable().
-            Where(user => user.username == username && user.password == password).ToListAsync();
-            if (query.Count == 0)
-            {
-                return null;
-            }
-            return query[0];
+            Where(user => user.username == username).FirstOrDefaultAsync();
+            return query;
         }
 
         public List<User> getWorker()
         {
             var query = _users.AsQueryable().
-            Where(user => user.role =="worker").ToList();
-            if (query.Count==0)
+            Where(user => user.role == "worker").ToList();
+            if (query.Count == 0)
             {
                 return null;
             }
