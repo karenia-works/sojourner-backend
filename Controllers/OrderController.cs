@@ -86,7 +86,7 @@ namespace Sojourner.Controllers
         {
             order.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
             var res = await _orderService.insertOrder(order);
-            if (res != false)
+            if (!res)
             {
                 //insert error
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "insert error" });
