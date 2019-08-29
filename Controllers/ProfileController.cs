@@ -54,10 +54,10 @@ namespace Sojourner.Controllers
         }
 
         [Authorize("adminApi")]
-        [HttpDelete("/{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public async Task<IActionResult> deleteProfile(string id)
+        [HttpDelete("{email}")]
+        public async Task<IActionResult> deleteProfile(string email)
         {
-            var tem = await _profileService.deleteProfile(id);
+            var tem = await _profileService.deleteProfile(email);
             if (tem.DeletedCount != 1)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user profile delete error" });
