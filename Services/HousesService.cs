@@ -38,55 +38,72 @@ namespace Sojourner.Services
         }
 
         public Task<List<House>> searchForHouse(
-            DateTime startTime, DateTime endTime, IEnumerable<string> keywords, IEnumerable<string> houseType,
-            int limit, int skip
+            DateTime startTime, DateTime endTime, IEnumerable<string> keywords, IEnumerable<string> roomType,
+            bool includeLongRent, bool inclideShortRent, int limit, int skip
         )
         {
             const string _ordersName = "orders";
-            var aggregate = _houses.Aggregate(
-                PipelineDefinition<House, House>.Create(
-                    new BsonDocument[]
-                    {
-                        new BsonDocument("$match", new BsonDocument(
-                            new List<BsonElement>(){
-                                new BsonElement("name",
-                                    new BsonRegularExpression(string.Join('|', keywords), "i")
-                                ),
-                                new BsonElement("longAvailable", true),
-                                new BsonElement("type",
-                                    new BsonDocument("$in", new BsonArray(houseType))
-                                )
-                            }
-                        )),
-                        new BsonDocument("$lookup",
-                            new BsonDocument(
-                            new List<BsonElement>(){
-                                new BsonElement("from", settings.OrderCollectionName),
-                                new BsonElement("localField", "_id"),
-                                new BsonElement("foreignField", "houseId"),
-                                new BsonElement("as", _ordersName)
-                            })
-                        ),
+
+            List<BsonElement> searchOrOption = new List<BsonElement>();
+
+            if (includeLongRent)
+                searchOrOption.Add(new BsonElement("longAvailable", true));
+
+            if (inclideShortRent)
+                searchOrOption.Add(new BsonElement("shortAvailable", true));
+
+
+            BsonDocument[] stages = new BsonDocument[]
+            {
+                new BsonDocument("$match", new BsonDocument(
+                    "$and", new BsonArray(){
                         new BsonDocument(
-                            "$match",
-                            new BsonDocument(_ordersName,
+                        new List<BsonElement>(){
+                            new BsonElement("name",
+                                new BsonRegularExpression(string.Join('|', keywords), "i")
+                            ),
+                            new BsonElement("type",
+                                new BsonDocument("$in", new BsonArray(roomType))
+                            )
+                        }),
+                        new BsonDocument(
+                            "$or",
+                            new BsonDocument(searchOrOption)
+                        )
+                    }
+                )),
+                new BsonDocument("$lookup",
+                    new BsonDocument(
+                    new List<BsonElement>(){
+                        new BsonElement("from", settings.OrderCollectionName),
+                        new BsonElement("localField", "_id"),
+                        new BsonElement("foreignField", "houseId"),
+                        new BsonElement("as", _ordersName)
+                    })
+                ),
+                new BsonDocument(
+                    "$match",
+                    new BsonDocument(_ordersName,
+                        new BsonDocument(
+                            "$not",
+                            new BsonDocument("$elemMatch",
                                 new BsonDocument(
-                                    "$not",
-                                    new BsonDocument("$elemMatch",
-                                        new BsonDocument(
-                                        new List<BsonElement>{
-                                            new BsonElement("startDate", new BsonDocument("$lt", endTime)),
-                                            new BsonElement("endDate", new BsonDocument("$gt", startTime))
-                                        }
-                                        )
-                                    )
+                                new List<BsonElement>{
+                                    new BsonElement("startDate", new BsonDocument("$lt", endTime)),
+                                    new BsonElement("endDate", new BsonDocument("$gt", startTime))
+                                }
                                 )
                             )
-                        ),
-                        new BsonDocument("$project", new BsonDocument("orders", false)),
-                        new BsonDocument("$skip", skip),
-                        new BsonDocument("$limit", limit)
-                    }
+                        )
+                    )
+                ),
+                new BsonDocument("$project", new BsonDocument("orders", false)),
+                new BsonDocument("$skip", skip),
+                new BsonDocument("$limit", limit)
+            };
+            var aggregate = _houses.Aggregate(
+                PipelineDefinition<House, House>.Create(
+                    stages
                 )
             );
 
