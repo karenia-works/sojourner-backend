@@ -64,7 +64,7 @@ namespace Sojourner.Controllers
             return Created(returnUri, id.ToString());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> downloadImage(string id)
         {
             var objectId = new ObjectId(id);
@@ -84,7 +84,8 @@ namespace Sojourner.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+
+        [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> deleteImage(string id)
         {
             try

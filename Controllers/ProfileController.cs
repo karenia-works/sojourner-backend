@@ -8,6 +8,7 @@ using Sojourner.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using IdentityServer4;
 
 namespace Sojourner.Controllers
 {
@@ -18,7 +19,8 @@ namespace Sojourner.Controllers
     {
         private ProfileService _profileService;
 
-        public ProfileController(ProfileService profileService){
+        public ProfileController(ProfileService profileService)
+        {
             _profileService = profileService;
         }
 
@@ -33,18 +35,20 @@ namespace Sojourner.Controllers
         // }
 
         [HttpGet("{userName}")]
-        public async Task<Profile> getProfileByUserName(string userName){
+        public async Task<Profile> getProfileByUserName(string userName)
+        {
             var res = await _profileService.getProfileByEmail(userName);
-            if(res == null){ 
+            if (res == null)
+            {
                 NotFound();
-                //return StatusCode(StatusCodes.Status404NotFound, new {success = false, error = "user not exist"});
             }
             return res;
         }
 
         [Authorize("adminApi")]
         [HttpGet]
-        public async Task<List<Profile>> getProfileList(){
+        public async Task<List<Profile>> getProfileList()
+        {
             var res = await _profileService.getProfileList();
             return res;
         }
@@ -62,7 +66,7 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status200OK);
         }
 
-        [Authorize("adminApi")]
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpPost]
         public async Task<IActionResult> insertProfile([FromBody] Profile user_in)
         {
@@ -76,19 +80,19 @@ namespace Sojourner.Controllers
                 await _profileService.insertProfile(user_in);
                 return StatusCode(StatusCodes.Status201Created);
             }
-
         }
 
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpPost("{id}")]
         public async Task<IActionResult> updateProfile(string email, [FromBody]Profile user_in)
         {
-            if(email != user_in.email)
+            if (email != user_in.email)
             {
                 return BadRequest(new { success = false, error = "user id do not match" });
             }
 
             var res = await _profileService.getProfileByEmail(user_in.email);
-            
+
             if (res == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "user profile not exist" });

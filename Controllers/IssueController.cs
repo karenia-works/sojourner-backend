@@ -24,7 +24,13 @@ namespace Sojourner.Controllers
 
         }
 
-        [HttpGet("{id}")]
+        /// <summary>
+        /// Get issue according to issue id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize("adminApi")]
+        [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<Issue> getIssueById(string id)
         {
             var res = await _issueService.getIssueById(id);
@@ -35,19 +41,22 @@ namespace Sojourner.Controllers
             return res;
         }
 
+        [Authorize()]
         [HttpGet("IssueByUid")]
         public async Task<List<Issue>> getIssueListByUid(string uid)
         {
             var res = await _issueService.getIssueListByUid(uid);
-            if(res == null)
+            if (res == null)
                 NotFound();
             return res;
         }
+
+        [Authorize("worker")]
         [HttpGet("IssueByWid")]
         public async Task<List<Issue>> getIssueListByWid(string wid)
         {
             var res = await _issueService.getIssueListByWid(wid);
-            if(res == null)
+            if (res == null)
                 NotFound();
             return res;
         }
@@ -59,7 +68,9 @@ namespace Sojourner.Controllers
             await _issueService.insertIssue(issue);
             return StatusCode(StatusCodes.Status201Created, new { id = issue.id });
         }
-        [HttpPut("{id}")]
+
+        [Authorize("adminApi")]
+        [HttpPut("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> replyToComplain(string id, [FromBody] Issue issue)
         {
             var res = await _issueService.replyToComplain(issue.id, issue.reply);
@@ -68,6 +79,8 @@ namespace Sojourner.Controllers
             else
                 return StatusCode(StatusCodes.Status200OK);
         }
+
+        [Authorize("adminApi")]
         [HttpGet("sendWorker")]
         public async Task<IActionResult> sendWorker(string id, string workerId)
         {
@@ -78,6 +91,8 @@ namespace Sojourner.Controllers
             else
                 return StatusCode(StatusCodes.Status200OK);
         }
+
+        [Authorize("adminApi")]
         [HttpGet("unFinishedIssue")]
         public async Task<IActionResult> getUnFinishedIssueList()
         {

@@ -36,12 +36,13 @@ namespace Sojourner.Controllers
             }
             return res;
         }
-        
+
+        [Authorize("adminApi")]
         [HttpGet("HouseList")]
         public async Task<List<House>> getHouseList()
         {
             var res = await _housesService.getHouseList();
-            if(res == null)
+            if (res == null)
                 NotFound();
             return res;
         }

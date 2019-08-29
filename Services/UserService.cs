@@ -66,7 +66,7 @@ namespace Sojourner.Services
         public async Task<List<User>> getWorker()
         {
             var query = _users.AsQueryable().
-            Where(user => user.role == "worker").Select(getWorker=>getWorker);
+            Where(user => user.role == "worker").Select(getWorker => getWorker);
             return await query.ToListAsync();
         }
         public async Task<User> findClearUserName(string keyword)
@@ -76,9 +76,9 @@ namespace Sojourner.Services
             return query;
         }
 
-        public async Task<DeleteResult> deleteUser(string id)
+        public async Task<DeleteResult> deleteUser(string username)
         {
-            var result = await _users.DeleteOneAsync(o => o.id == id);
+            var result = await _users.DeleteOneAsync(o => o.username == username);
             return result;
         }
 
@@ -86,7 +86,7 @@ namespace Sojourner.Services
         {
             var flicker = Builders<User>.Filter.Eq("id", user.id);
             var update = Builders<User>.Update.Set("username", user.username).Set("password", user.password).Set("role", user.role);
-            var result =await _users.UpdateOneAsync(flicker, update);
+            var result = await _users.UpdateOneAsync(flicker, update);
             return result;
         }
     }

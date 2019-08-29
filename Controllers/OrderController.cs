@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using IdentityServer4;
+using System.Linq;
+
 namespace Sojourner.Controllers
 {
     [Route("api/v1/[controller]")]
@@ -15,15 +17,16 @@ namespace Sojourner.Controllers
     public class OrderController : ControllerBase
     {
         private OrderService _orderService;
-        public OrderController(OrderService orderService)
+        private UserService _userService;
+        public OrderController(OrderService orderService, UserService userService)
         {
             _orderService = orderService;
+            _userService = userService;
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
-        [HttpGet("{id}")]
-        public async Task<Order> findOrder(string id)
-
+        [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
+        public async Task<Order> getOrderById(string id)
         {
             var res = await _orderService.getOrderById(id);
             if (res == null)
@@ -33,12 +36,29 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        // GET api/v1/order/for_user?uid=12345
+
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
-        [HttpGet("for_user")]
-        public async Task<List<Order>> findUserOrder(string uid = "123451234512345123451234")
+        [HttpGet("me")]
+        public async Task<List<Order>> getOrderMe()
         {
-            var res = await _orderService.findUserActiveOrder(uid);
+            var userId = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
+            var user = await _userService.getUserId(userId);
+
+            var res = await _orderService.findUserActiveOrder(user.username);
+            if (res == null)
+            {
+                NotFound();
+            }
+            return res;
+        }
+
+
+        // GET api/v1/order/for_user?user=some@blahblah.com
+        [Authorize("adminApi")]
+        [HttpGet("for_user")]
+        public async Task<List<Order>> getOrderByEmail(string user)
+        {
+            var res = await _orderService.findUserActiveOrder(user);
             if (res == null)
             {
                 NotFound();
@@ -48,7 +68,7 @@ namespace Sojourner.Controllers
 
 
         [HttpGet("for_house")]
-        public async Task<List<Order>> findHouseOrder(string oid = "123451234512345123451234")
+        public async Task<List<Order>> findHouseOrder(string oid)
 
         {
             var res = await _orderService.findHouseOrder(oid);
@@ -79,7 +99,7 @@ namespace Sojourner.Controllers
         }
 
         [Authorize("adminApi")]
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> deleteOrder(string id)
         {
             var tem = await _orderService.deleteOrder(id);
@@ -94,7 +114,8 @@ namespace Sojourner.Controllers
 
         }
 
-        [HttpGet("{oid}/setFinished")]
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpGet("{oid:regex([[0-9a-fA-F]]{{24}})}/setFinished")]
         public async Task<IActionResult> isFinishedChange(string oid)
         {
             var res = await _orderService.isFinishedChange(oid);

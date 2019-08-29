@@ -61,6 +61,7 @@ namespace Sojourner.Controllers
         }
 
         //object type: string
+        [Authorize("adminApi")]
         [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> deleteUser(string id)
         {
@@ -79,6 +80,7 @@ namespace Sojourner.Controllers
         [HttpPost]
         public async Task<IActionResult> insertUser([FromBody] User user_in)
         {
+            // TODO: only allow regular user to create if not authorized
             var tem = await _userService.findClearUserName(user_in.username);
             if (tem != null)
             {
@@ -91,6 +93,7 @@ namespace Sojourner.Controllers
             }
         }
 
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpPost("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> updateUser([FromBody]User user_in)
         {
@@ -108,6 +111,7 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status200OK);
         }
 
+        [Authorize("adminApi")]
         [HttpGet("workers")]
         public async Task<List<User>> getWorkerList()
         {
