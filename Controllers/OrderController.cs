@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Net.Mime;
 using System;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using IdentityServer4;
 using System.Linq;
 using MongoDB.Bson;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace Sojourner.Controllers
 {
@@ -135,7 +137,12 @@ namespace Sojourner.Controllers
         [HttpGet("orderView")]
         public async Task<IActionResult> adminOrderView()
         {
-            return Ok(await _orderService.getAdminOrderPage());
+            var result = await _orderService.getAdminOrderPage();
+            var resultJson = result.ToJson();
+            return Ok(result);
+            //     ok.ContentTypes.Clear();
+            //     ok.ContentTypes.Add(MediaTypeNames.Application.Json);
+            //     return ok;
         }
     }
 }

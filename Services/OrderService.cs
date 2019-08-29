@@ -100,7 +100,7 @@ namespace Sojourner.Services
 
         public class ExtendedOrder : Order
         {
-            public House house;
+            public House house { get; set; }
         }
 
         async public Task<List<ExtendedOrder>> getAdminOrderPage()
@@ -130,7 +130,9 @@ namespace Sojourner.Services
                 )
             );
 
-            return await ordersView.ToListAsync();
+
+            List<ExtendedOrder> list = await ordersView.ToListAsync();
+            return list;
         }
     }
 }

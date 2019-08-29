@@ -10,11 +10,6 @@ namespace Sojourner.Models
         public string country;
         public string city;
         public string street;
-
-        static Address()
-        {
-            BsonClassMap.RegisterClassMap<Address>();
-        }
     }
 
     public class House

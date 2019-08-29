@@ -25,6 +25,8 @@ using Sojourner.Interface;
 using Sojourner.Repository;
 using Sojourner.Store;
 using IdentityServer4.Test;
+using MongoDB.Bson.Serialization;
+
 namespace Sojourner
 {
     public class Startup
@@ -87,6 +89,8 @@ namespace Sojourner
                 );
             });
 
+
+            BsonClassMap.RegisterClassMap<Address>();
 
         }
 
