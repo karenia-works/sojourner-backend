@@ -20,7 +20,7 @@ namespace Sojourner.Services
         public User getUserId(string id)
         {
             var query = _users.AsQueryable().
-                Where(u => u.id == id).First();
+                Where(u => u.id == id).FirstOrDefault();
             return query;
         }
 

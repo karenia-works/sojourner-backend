@@ -27,13 +27,13 @@ namespace Sojourner.Services
 
         public Profile getProfileById(string id_in){
             var query = _profile.AsQueryable().
-                Where(p => p.userId == id_in).First();
+                Where(p => p.userId == id_in).FirstOrDefault();
             return query;
         }
 
         public Profile getProfileByUserName(string userName_in){
             var query = _profile.AsQueryable().
-                Where(p => p.userName == userName_in).First();
+                Where(p => p.userName == userName_in).FirstOrDefault();
             return query;
         }
 
