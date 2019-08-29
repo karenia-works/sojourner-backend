@@ -41,7 +41,7 @@ namespace Sojourner.Controllers
             _issueService.insertIssue(issue);
             return StatusCode(StatusCodes.Status201Created, new { id = issue.id });
         }
-        [HttpPost("update")]
+        [HttpPut("update")]
         public IActionResult replyToComplain(Issue issue)
         {
             var res = _issueService.replyToComplain(issue.id,issue.reply);

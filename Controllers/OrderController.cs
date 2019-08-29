@@ -5,6 +5,8 @@ using Sojourner.Services;
 using Sojourner.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using IdentityServer4;
 
 namespace Sojourner.Controllers
 {
@@ -19,7 +21,8 @@ namespace Sojourner.Controllers
             _orderService = orderService;
         }
 
-        [HttpGet("/{id}")]
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpGet("{id}")]
         public Order findOrder(string id)
         {
             var res = _orderService.getOrderById(id);
@@ -31,8 +34,9 @@ namespace Sojourner.Controllers
         }
 
         // GET api/v1/order/for_user?uid=12345
-        [HttpGet("/for_user")]
-        public List<Order> findUserOrder(string uid)
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpGet("for_user")]
+        public List<Order> findUserOrder(string uid = "123451234512345123451234")
         {
             var res = _orderService.findUserOrder(uid);
             if (res == null)
@@ -42,7 +46,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [HttpGet("/for_house")]
+        [HttpGet("for_house")]
         public List<Order> findHouseOrder(string oid)
         {
             var res = _orderService.findHouseOrder(oid);
