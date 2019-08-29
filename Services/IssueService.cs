@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Collections.Generic;
 using Sojourner.Models.Settings;
+using System.Threading.Tasks;
 
 namespace Sojourner.Services
 {
@@ -16,34 +17,34 @@ namespace Sojourner.Services
             var database = client.GetDatabase(settings.DbName);
             _issues = database.GetCollection<Issue>(settings.IssueCollectionName);
         }
-        public Issue getIssueById(string id)
+        public async Task<Issue> getIssueById(string id)
         {
-            var query = _issues.AsQueryable().
-                Where(o => o.id == id).First();
+            var query = await _issues.AsQueryable().
+                Where(o => o.id == id).FirstOrDefaultAsync();
             return query;
         }
-        public bool insertIssue(Issue tar)
+        public async ValueTask<bool> insertIssue(Issue tar)
         {
-            _issues.InsertOne(tar);
+            await _issues.InsertOneAsync(tar);
             return true;
         }
-        public UpdateResult replyToComplain(string iid,string reply)
+        public async Task<UpdateResult> replyToComplain(string iid, string reply)
         {
-            var flicker = Builders<Issue>.Filter.Eq("id",iid);
-            var update = Builders<Issue>.Update.Set("reply",reply).Set("isReplied",true);
-            var res = _issues.UpdateOne(flicker,update);
+            var flicker = Builders<Issue>.Filter.Eq("id", iid);
+            var update = Builders<Issue>.Update.Set("reply", reply).Set("isReplied", true);
+            var res = await _issues.UpdateOneAsync(flicker, update);
 
             return res;
         }
-        
-        public UpdateResult sendWorker(string iid,string wid)
-        {
-            var flicker = Builders<Issue>.Filter.Eq("id",iid);
-            var update = Builders<Issue>.Update.Set("wid",wid);
-            var res = _issues.UpdateOne(flicker,update);
 
-            return res; 
-        } 
-        
+        public async Task<UpdateResult> sendWorker(string iid, string wid)
+        {
+            var flicker = Builders<Issue>.Filter.Eq("id", iid);
+            var update = Builders<Issue>.Update.Set("wid", wid);
+            var res = await _issues.UpdateOneAsync(flicker, update);
+
+            return res;
+        }
+
     }
 }

@@ -23,41 +23,19 @@ namespace Sojourner.Services
             database = client.GetDatabase(settings.DbName);
             _houses = database.GetCollection<House>(settings.HouseCollectionName);
         }
-        public House getHouseById(String id)
+        public async Task<House> getHouseById(String id)
         {
-            var query = _houses.AsQueryable().
-                Where(o => o.id == id).Select(house => house);
-            if (query.Count() == 0)
-                return null;
-            else return query.First();
+            var query = await _houses.AsQueryable().
+                Where(o => o.id == id).FirstOrDefaultAsync();
+            return query;
         }
-        public List<House> takeAvailableLong()
+        public async Task<List<House>> takeAvailableLong()
         {
-            var query = _houses.AsQueryable().
+            var query = await _houses.AsQueryable().
                         Where(h => h.longAvailable == true).
-                        Select(h => h);
-
-            return query.ToList();
+                        ToListAsync();
+            return query;
         }
-        public List<House> takeAvailableShort(string startDate, string endDate)
-        {
-            var sd = DateTime.Parse(startDate);
-            var ed = DateTime.Parse(endDate);
-            //change later
-            var query = from o in database.GetCollection<Order>(settings.OrderCollectionName).AsQueryable()
-                        where o.startDate < ed || o.endDate > sd
-                        select o.houseId;
-            return _houses.Find(s => s.longAvailable == false && !query.Contains(s.id)).ToList<House>();
-        }
-        // public IMongoQueryable<House> takeAvailableAll(String startDate, String endDate)
-        // {
-        //     var sd = DateTime.Parse(startDate);
-        //     var ed = DateTime.Parse(endDate);
-        //     //change later
-        //     var query = database.GetCollection<Order>(settings.OrderCollectionName).AsQueryable()
-        //                 .Where(o => o.startDate < ed || o.endDate > sd).Join(database.GetCollection<settings.)
-        //      _houses.Find(s => s.longAvailable || !query.Any(item => item == s.id));
-        // }
 
         public Task<List<House>> searchForHouse(
             DateTime startTime, DateTime endTime, IEnumerable<string> keywords, IEnumerable<string> houseType,
@@ -75,7 +53,7 @@ namespace Sojourner.Services
                                     new BsonRegularExpression(string.Join('|', keywords), "i")
                                 ),
                                 new BsonElement("longAvailable", true),
-                                new BsonElement("houseType",
+                                new BsonElement("type",
                                     new BsonDocument("$in", new BsonArray(houseType))
                                 )
                             }
@@ -115,24 +93,24 @@ namespace Sojourner.Services
             return aggregate.ToListAsync();
         }
 
-        public void insertHouse(House tar)
+        public async Task insertHouse(House tar)
         {
-            _houses.InsertOne(tar);
+            await _houses.InsertOneAsync(tar);
         }
         public Task insertHouseManyAsync(List<House> tars)
         {
             return _houses.InsertManyAsync(tars);
         }
 
-        public DeleteResult deleteHouse(House tar)
+        public async Task<DeleteResult> deleteHouse(string id)
         {
-            var res = _houses.DeleteOne(o => o.id == tar.id);
+            var res = await _houses.DeleteOneAsync(o => o.id == id);
             return res;
         }
 
-        public ReplaceOneResult updateHouse(House tar)
+        public async Task<ReplaceOneResult> updateHouse(House tar)
         {
-            var res = _houses.ReplaceOne(o => o.id == tar.id, tar);
+            var res = await _houses.ReplaceOneAsync(o => o.id == tar.id, tar);
             return res;
         }
 

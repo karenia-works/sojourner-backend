@@ -27,10 +27,10 @@ namespace Sojourner.Controllers
         }
 
         [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public House getHouseById(string id)
+        public async Task<House> getHouseById(string id)
 
         {
-            var res = _housesService.getHouseById(id);
+            var res = await _housesService.getHouseById(id);
             if (res == null)
             {
                 NotFound();
@@ -52,44 +52,36 @@ namespace Sojourner.Controllers
 
         [Authorize("adminApi")]
         [HttpPost]
-        public IActionResult insertHouse(House house)
+        public async Task<IActionResult> insertHouse(House house)
         {
             house.id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
-            _housesService.insertHouse(house);
+            await _housesService.insertHouse(house);
             return StatusCode(StatusCodes.Status201Created, new { id = house.id });
         }
 
         [Authorize("adminApi")]
         [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public IActionResult deleteHouse(string id)
+        public async Task<IActionResult> deleteHouse(string id)
         {
-            var res = _housesService.getHouseById(id);
-            if (res == null)
+            var tem = await _housesService.deleteHouse(id);
+            if (tem.DeletedCount != 1)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "house not exist" });
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
             }
             else
             {
-                var tem = _housesService.deleteHouse(res);
-                if (tem.DeletedCount != 1)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete error" });
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status200OK);
-                }
+                return StatusCode(StatusCodes.Status200OK);
             }
         }
 
         [Authorize("adminApi")]
         [HttpPut("{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public IActionResult updateHouse(string id, House house)
+        public async Task<IActionResult> updateHouse(string id, House house)
         {
-            if (_housesService.getHouseById(house.id) == null)
+            if (await _housesService.getHouseById(house.id) == null)
                 return StatusCode(StatusCodes.Status204NoContent);
 
-            var res = _housesService.updateHouse(house);
+            var res = await _housesService.updateHouse(house);
             if (res != null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "update error" });

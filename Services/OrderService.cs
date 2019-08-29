@@ -18,27 +18,31 @@ namespace Sojourner.Services
             _orders = database.GetCollection<Order>(settings.OrderCollectionName);
             _finishedOrders = database.GetCollection<Order>(settings.finishedOrderCollectionName);
         }
-        public List<Order> findUserOrder(string uid)
+        public async Task<List<Order>> findUserActiveOrder(string uid)
         {
-            var query = _orders.AsQueryable().
-            Where(o => o.userId == uid).
-            Select(o => o);
-            var queryfin = _finishedOrders.AsQueryable().
-            Where(o => o.userId == uid).Select(o => o);
-            (query.ToList()).AddRange(queryfin.ToList());
-            return query.ToList();
+            var query = await _orders.AsQueryable()
+                .Where(o => o.userId == uid).ToListAsync();
+            return query;
         }
-        public List<Order> findHouseOrder(string hid)
+
+        public async Task<List<Order>> findUserFinishedOrder(string uid)
         {
-            var query = _orders.AsQueryable().
-            Where(o => o.houseId == hid).
-            Select(o => o);
-            var queryfin = _finishedOrders.AsQueryable().
-            Where(o => o.houseId == hid).Select(o => o);
-            (query.ToList()).AddRange(queryfin.ToList());
-            return query.ToList();
+            var query = await _finishedOrders.AsQueryable()
+                .Where(o => o.userId == uid).ToListAsync();
+            return query;
         }
-        public Order getOrderById(string oid)
+
+        public async Task<List<Order>> findHouseOrder(string hid)
+        {
+            var query = _orders.AsQueryable()
+                .Where(o => o.houseId == hid);
+            var queryfin = _finishedOrders.AsQueryable()
+                .Where(o => o.houseId == hid);
+            var orders = (await query.ToListAsync());
+            orders.AddRange(await queryfin.ToListAsync());
+            return orders;
+        }
+        public async Task<Order> getOrderById(string oid)
         {
             var query = _orders.AsQueryable().
             Where(o => o.id == oid).Select(o => o);
@@ -46,39 +50,40 @@ namespace Sojourner.Services
                 query = _finishedOrders.AsQueryable().Where(o => o.id == oid).Select(o => o);
             else
             {
-                return query.First();
+                return await query.FirstOrDefaultAsync();
             }
-            if (query.CountAsync().Result == 0)
+            if (await query.CountAsync() == 0)
                 return null;
             else
-                return query.First();
+                return await query.FirstOrDefaultAsync();
 
         }
-        public bool insertOrder(Order tar)
+        public async ValueTask<bool> insertOrder(Order tar)
         {
-            _orders.InsertOne(tar);
+            await _orders.InsertOneAsync(tar);
             return true;
         }
-        public DeleteResult deleteOrder(Order tar)
+        public async Task<DeleteResult> deleteOrder(string id)
         {
-            var res = _orders.DeleteOne(o => o.id == tar.id);
+            var res = await _orders.DeleteOneAsync(o => o.id == id);
             return res;
         }
 
         //修改isFinished
-        async public Task<Order> isFinishedChange(string oid)
+        public async Task<Order> isFinishedChange(string oid)
         {
             var query = _orders.AsQueryable().Where(o => o.id == oid).Select(o => o);
             if (query.CountAsync().Result == 0)
                 return null;
-            var tar = query.FirstAsync();
-            await _finishedOrders.InsertOneAsync(tar.Result);
-            return tar.Result;
+            var tar = await query.FirstAsync();
+            _orders.DeleteOne(Order => Order.id == tar.id);
+            await _finishedOrders.InsertOneAsync(tar);
+            return tar;
         }
 
         // public DateTime calCancelDate(DateTime ct)
         // {
-            
+
         // }
         async public Task<List<Order>> checkOrderDate(DateTime checkDate)
         {
