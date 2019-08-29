@@ -28,13 +28,21 @@ namespace Sojourner.Controllers
 
         [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<House> getHouseById(string id)
-
         {
             var res = await _housesService.getHouseById(id);
             if (res == null)
             {
                 NotFound();
             }
+            return res;
+        }
+        
+        [HttpGet("HouseList")]
+        public async Task<List<House>> getHouseList()
+        {
+            var res = await _housesService.getHouseList();
+            if(res == null)
+                NotFound();
             return res;
         }
 

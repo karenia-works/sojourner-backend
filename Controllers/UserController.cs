@@ -26,7 +26,7 @@ namespace Sojourner.Controllers
 
         //object type: string
         [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
-        public async Task< User> getUserId(string id)
+        public async Task<User> getUserId(string id)
         {
             var res = await _userService.getUserId(id);
             if (res == null)
