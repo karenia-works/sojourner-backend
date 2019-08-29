@@ -21,14 +21,14 @@ namespace Sojourner.Services
         public async Task<List<Order>> findUserActiveOrder(string uid)
         {
             var query = await _orders.AsQueryable()
-                .Where(o => o.userId == uid).ToListAsync();
+                .Where(o => o.userEmail == uid).ToListAsync();
             return query;
         }
 
         public async Task<List<Order>> findUserFinishedOrder(string uid)
         {
             var query = await _finishedOrders.AsQueryable()
-                .Where(o => o.userId == uid).ToListAsync();
+                .Where(o => o.userEmail == uid).ToListAsync();
             return query;
         }
 

@@ -11,8 +11,8 @@ namespace Sojourner.Models
         public string id { get; set; }
         [BsonRepresentation(BsonType.ObjectId)]
         public string houseId { get; set; }
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string userId { get; set; }
+
+        public string userEmail { get; set; }
         public DateTime startDate { get; set; }//入住时间
         public DateTime endDate { get; set; }//退住时间
         public bool isLongRent { get; set; }
@@ -23,8 +23,8 @@ namespace Sojourner.Models
         public DateTime createDate { get; set; }//订单创建时间
         public DateTime cancelDate { get; set; }//订单（自动）关闭时间
         public DateTime ddlDate { get; set; }//本轮月租支付截至时间
-        public bool isPaid{get;set;}//本轮月租是否支付
-        
+        public bool isPaid { get; set; }//本轮月租是否支付
+
 
     }
 }

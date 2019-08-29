@@ -45,12 +45,12 @@ namespace Sojourner.Services
         }
         public async Task<bool> emailGo(Order ttt)
         {
-            var user = (await _userService.getUserId(ttt.userId)).username;
+            var user = ttt.userEmail;
             var house = (await _houseService.getHouseById(ttt.houseId)).name;
             var Mail = new MailMessage("liupangx@163.com", user);
             Mail.Subject = "House warn";
             Mail.Body = @"Hey man,
-        Your house`s rent time less than 7 days, please came to our web and extend your order.";
+        Your house's rent time less than 7 days, please came to our web and extend your order.";
             Mail.BodyEncoding = System.Text.Encoding.UTF8;
             Mail.IsBodyHtml = true;
 
