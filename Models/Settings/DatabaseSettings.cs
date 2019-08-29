@@ -9,7 +9,7 @@ namespace Sojourner.Models.Settings
         public string UserCollectionName { get; set; }
         public string HouseCollectionName { get; set; }
         public string OrderCollectionName { get; set; }
-        public string IssueCollectionName{get;set;}
+        public string IssueCollectionName { get; set; }
         public string finishedOrderCollectionName { get; set; }
         public string ImageBucketName { get; set; }
         public string ProfileCollectionName { get; set; }
@@ -22,11 +22,9 @@ namespace Sojourner.Models.Settings
         string UserCollectionName { get; set; }
         string HouseCollectionName { get; set; }
         string OrderCollectionName { get; set; }
-        string IssueCollectionName{get;set;}
+        string IssueCollectionName { get; set; }
         public string ImageBucketName { get; set; }
         string finishedOrderCollectionName { get; set; }
         string ProfileCollectionName { get; set; }
-        string ImageBucketName { get; set; }
-        string finishedOrderCollectionName { get; set; }
     }
 }
