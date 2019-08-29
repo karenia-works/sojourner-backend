@@ -17,10 +17,10 @@ namespace Sojourner.Services
             _users = database.GetCollection<User>(settings.UserCollectionName);
         }
 
-        public User getUserId(string id)
+        public async Task<User> getUserId(string id)
         {
-            var query = _users.AsQueryable().
-                Where(u => u.id == id).FirstOrDefault();
+            var query = await _users.AsQueryable().
+                Where(u => u.id == id).FirstOrDefaultAsync();
             return query;
         }
 
@@ -63,35 +63,30 @@ namespace Sojourner.Services
             return query;
         }
 
-        public List<User> getWorker()
+        public async Task<List<User>> getWorker()
         {
             var query = _users.AsQueryable().
-            Where(user => user.role == "worker").ToList();
-            if (query.Count == 0)
-            {
-                return null;
-            }
+            Where(user => user.role == "worker").Select(getWorker=>getWorker);
+            return await query.ToListAsync();
+        }
+        public async Task<User> findClearUserName(string keyword)
+        {
+            var query = await _users.AsQueryable().
+            Where(u => u.username == keyword).FirstOrDefaultAsync();
             return query;
         }
-        public List<User> findClearUserName(string keyword)
-        {
-            var query = _users.AsQueryable().
-            Where(u => u.username == keyword).
-            Select(u => u);
-            return query.ToList();
-        }
 
-        public DeleteResult deleteUser(User tar)
+        public async Task<DeleteResult> deleteUser(User tar)
         {
-            var result = _users.DeleteOne(o => o.id == tar.id);
+            var result = await _users.DeleteOneAsync(o => o.id == tar.id);
             return result;
         }
 
-        public UpdateResult updateUser(User user)
+        public async Task<UpdateResult> updateUser(User user)
         {
             var flicker = Builders<User>.Filter.Eq("id", user.id);
             var update = Builders<User>.Update.Set("username", user.username).Set("password", user.password).Set("role", user.role);
-            var result = _users.UpdateOne(flicker, update);
+            var result =await _users.UpdateOneAsync(flicker, update);
             return result;
         }
     }
