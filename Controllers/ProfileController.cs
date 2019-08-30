@@ -35,6 +35,17 @@ namespace Sojourner.Controllers
         //     }
         //     return res;
         // }
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpGet("me")]
+        public async Task<Profile> getProfile(){
+            var user=User.Claims.Where(Claim=>Claim.Type=="Name").FirstOrDefault().Value;
+            var res=await _profileService.getProfileByEmail(user);
+            if(res==null)
+            {
+                NotFound();
+            }
+            return res;
+        }
         [Authorize("adminApi")]
         [HttpGet("{userName}")]
         public async Task<Profile> getProfileByUserName(string userName)

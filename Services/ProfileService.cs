@@ -27,7 +27,7 @@ namespace Sojourner.Services
             var query = await _profile.AsQueryable().OrderBy(p => p.userName).ToListAsync();
             return query;
         }
-        
+
         // public async Task<List<Profile>> getWorkerProfileList()
         // {
         //     var query = await _profile.AsQueryable().Where(p1=>p1.role=="worker").OrderBy(p => p.userName).ToListAsync();
