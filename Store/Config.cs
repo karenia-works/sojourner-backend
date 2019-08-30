@@ -34,9 +34,9 @@ namespace Sojourner.Store
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>{
-                new ApiResource("worker","workerApi",new string[]{"Role"}),
-                new ApiResource("admin","adminApi",new string[]{"Role"}),
-                new ApiResource(IdentityServer4.IdentityServerConstants.LocalApi.ScopeName,"identityapi",new string[]{"Role"})
+                new ApiResource("worker","workerApi",new string[]{"Name","Role"}),
+                new ApiResource("admin","adminApi",new string[]{"Name","Role"}),
+                new ApiResource(IdentityServer4.IdentityServerConstants.LocalApi.ScopeName,"identityapi",new string[]{"Name","Role"})
             };
 
         }

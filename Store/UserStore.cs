@@ -33,7 +33,7 @@ namespace Sojourner.Store
                     authenticationMethod: "custom",
                     claims: new Claim[]{
                         new Claim("id", result.id),
-                        new Claim("user", result.username),
+                        new Claim("Name", result.username),
                         new Claim("Role", result.role)
                     }
                 );
