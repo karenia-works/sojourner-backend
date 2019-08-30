@@ -43,10 +43,12 @@ namespace Sojourner.Services
             await _issues.InsertOneAsync(tar);
             return true;
         }
-        public async Task<UpdateResult> replyToComplain(string iid, string reply)
+        public async Task<UpdateResult> replyToComplain(string iid, string reply,bool needRepair)
         {
             var flicker = Builders<Issue>.Filter.Eq("id", iid);
             var update = Builders<Issue>.Update.Set("reply", reply).Set("isReplied", true);
+            if(needRepair != true)
+                update = Builders<Issue>.Update.Set("isFinished",true);
             var res = await _issues.UpdateOneAsync(flicker, update);
 
             return res;
@@ -60,12 +62,29 @@ namespace Sojourner.Services
 
             return res;
         }
-
+        public async Task<List<Issue>> getIssueList()
+        {
+            var query = await _issues.AsQueryable().ToListAsync();
+            return query;
+        }
         public async Task<List<Issue>> getUnFinishedIssueList()
         {
             var query = await _issues.AsQueryable().Where(Issue => Issue.isFinished == false).OrderByDescending(o => o.createTime).ToListAsync();
             return query;
         }
+        public async Task<List<Issue>> getNeedRepairIssueList(string wid)
+        {
+            var query = await _issues.AsQueryable().
+                Where(o => o.wid == wid && o.needRepair == true).ToListAsync();
+            return query;
+        }
+        public async Task<UpdateResult> confirmFinish(string iid)
+        {
+            var flicker = Builders<Issue>.Filter.Eq("id", iid);
+            var update = Builders<Issue>.Update.Set("isFinished",true);
+            var res = await _issues.UpdateOneAsync(flicker, update);
 
+            return res;
+        }
     }
 }
