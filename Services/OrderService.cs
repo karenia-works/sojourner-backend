@@ -13,7 +13,7 @@ namespace Sojourner.Services
     {
         private readonly IMongoCollection<Order> _orders;
         private readonly IMongoCollection<Order> _finishedOrders;
-        
+
         public OrderService(IDbSettings settings)
         {
             var client = new MongoClient(settings.DbConnection);
@@ -141,20 +141,59 @@ namespace Sojourner.Services
             return list;
         }
 
-        public async Task<UpdateResult> extendOrderDate(string oid,DateTime time)
+        public async Task<UpdateResult> extendOrderDate(string oid, DateTime time)
         {
             var flicker = Builders<Order>.Filter.Eq("id", oid);
             var update = Builders<Order>.Update.Set("endDate", time);
             var res = await _orders.UpdateOneAsync(flicker, update);
-            
+
             return res;
-            
+
         }
         public async Task<List<Order>> getOrderList()
         {
             var query = await _orders.AsQueryable().ToListAsync();
             return query;
         }
+        async public Task<List<ExtendedOrder>> getUserOrderPage(string email, string kw)
+        {
+            var queryDefinition = new BsonDocument[]
+            {
+                new BsonDocument("$lookup",
+                new BsonDocument
+                    {
+                        { "from", "houses" },
+                        { "localField", "houseId" },
+                        { "foreignField", "_id" },
+                        { "as", "house" }
+                    }),
+                new BsonDocument("$unwind",
+                new BsonDocument
+                    {
+                        { "path", "$house" },
+                        { "preserveNullAndEmptyArrays", true }
+                    }),
+                new BsonDocument("$match",
+                new BsonDocument
+                    {
+                        {"house.name", new BsonRegularExpression(kw, "i")},
+                        {"order.userEmail",new BsonDocument("$eq",email)}
+                    }
+                )
+            };
+
+            var ordersView = await _orders.AggregateAsync(
+                PipelineDefinition<Order, ExtendedOrder>
+                .Create(
+                    queryDefinition
+                )
+            );
+
+
+            List<ExtendedOrder> list = await ordersView.ToListAsync();
+            return list;
+        }
+
 
     }
 }

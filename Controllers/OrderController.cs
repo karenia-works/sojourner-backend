@@ -43,12 +43,10 @@ namespace Sojourner.Controllers
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("me")]
-        public async Task<List<Order>> getMyOrder()
+        public async Task<List<OrderService.ExtendedOrder>> getMyOrder(string kw = "")
         {
-            var userId = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
-            var user = await _userService.getUserId(userId);
-
-            var res = await _orderService.findUserActiveOrder(user.username);
+            var user = User.Claims.Where(claim => claim.Type == "Name").FirstOrDefault().Value;
+            var res = await _orderService.getUserOrderPage(user, kw);
             if (res == null)
             {
                 NotFound();
