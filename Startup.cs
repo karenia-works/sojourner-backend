@@ -41,6 +41,13 @@ namespace Sojourner
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            BsonClassMap.RegisterClassMap<Address>();
+            BsonClassMap.RegisterClassMap<House>();
+            BsonClassMap.RegisterClassMap<User>();
+            BsonClassMap.RegisterClassMap<Issue>();
+            BsonClassMap.RegisterClassMap<Order>();
+            BsonClassMap.RegisterClassMap<Profile>();
+
             services.Configure<DbSettings>(
             Configuration.GetSection(nameof(DbSettings)));
             services.AddSingleton<IDbSettings>(sp =>
@@ -89,9 +96,6 @@ namespace Sojourner
                 }
                 );
             });
-
-
-            BsonClassMap.RegisterClassMap<Address>();
 
         }
 
