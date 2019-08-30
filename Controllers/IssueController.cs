@@ -73,7 +73,7 @@ namespace Sojourner.Controllers
         [HttpPut("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> replyToComplain(string id, [FromBody] Issue issue)
         {
-            var res = await _issueService.replyToComplain(issue.id, issue.reply);
+            var res = await _issueService.replyToComplain(issue.id, issue.reply,issue.needRepair);
             if (res == null)
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Reply is failed" });
             else
@@ -105,6 +105,25 @@ namespace Sojourner.Controllers
             else
                 return StatusCode(StatusCodes.Status200OK);
         }
+
+        [Authorize("worker")]
+        [HttpGet("needRepairIssue")]
+        public async Task<List<Issue>> getNeedRepairIssueList(string wid)
+        {
+            var res = await _issueService.getNeedRepairIssueList(wid);
+            if(res == null)
+                NotFound();
+            return res;
+        }
+
+        [Authorize("worker")]
+        [HttpGet("confirmFinish")]
+        public async Task<IActionResult> confirmFinish(Issue issue)
+        {
+            var res = await _issueService.confirmFinish(issue.id);
+            return StatusCode(StatusCodes.Status200OK);
+        }
+
 
     }
 }
