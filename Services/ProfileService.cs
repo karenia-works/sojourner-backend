@@ -27,6 +27,28 @@ namespace Sojourner.Services
             var query = await _profile.AsQueryable().OrderBy(p => p.userName).ToListAsync();
             return query;
         }
+        
+        // public async Task<List<Profile>> getWorkerProfileList()
+        // {
+        //     var query = await _profile.AsQueryable().Where(p1=>p1.role=="worker").OrderBy(p => p.userName).ToListAsync();
+        //     return query;
+        // }
+        // public async Task<List<Profile>> getUserProfileList()
+        // {
+        //     var query = await _profile.AsQueryable().Where(p1=>p1.role=="IdertityServerApi").OrderBy(p => p.userName).ToListAsync();
+        //     return query;
+        // }
+        // public async Task<List<Profile>> getAdminProfileList()
+        // {
+        //     var query = await _profile.AsQueryable().Where(p1=>p1.role=="worker").OrderBy(p => p.userName).ToListAsync();
+        //     return query;
+        // }
+
+        public async Task<List<Profile>> getDirectProfileList(string role)
+        {
+            var query = await _profile.AsQueryable().Where(p1=>p1.role==role).OrderBy(p => p.userName).ToListAsync();
+            return query;
+        }
 
         // public async Task<Profile> getProfileById(string id_in)
         // {
