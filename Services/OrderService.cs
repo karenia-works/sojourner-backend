@@ -150,6 +150,11 @@ namespace Sojourner.Services
             return res;
             
         }
+        public async Task<List<Order>> getOrderList()
+        {
+            var query = await _orders.AsQueryable().ToListAsync();
+            return query;
+        }
 
     }
 }

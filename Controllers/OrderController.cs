@@ -133,36 +133,43 @@ namespace Sojourner.Controllers
             }
         }
 
-        // [Authorize("adminApi")]
+        [Authorize("adminApi")]
         [HttpGet("orderView")]
-        public async Task<IActionResult> adminOrderView(string kw = "")
+        public async Task<List<OrderService.ExtendedOrder>> adminOrderView(string kw = "")
         {
             var result = await _orderService.getAdminOrderPage(kw);
-            var resultJson = result.ToJson();
-            return Ok(result);
-            //     ok.ContentTypes.Clear();
-            //     ok.ContentTypes.Add(MediaTypeNames.Application.Json);
-            //     return ok;
+            return result;
+
+        }
+
+        [Authorize("adminApi")]
+        [HttpGet("OrderList")]
+        public async Task<List<Order>> getOrderList()
+        {
+            var res = await _orderService.getOrderList();
+            if (res == null)
+                NotFound();
+            return res;
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpPost("{oid:regex([[0-9a-fA-F]]{{24}})}/extendOrderDate")]
-        public async Task<IActionResult> extendOrderDate(string oid,DateTime time)
+        public async Task<IActionResult> extendOrderDate(string oid, DateTime time)
         {
-            var userId=User.Claims.Where(claim=>claim.Type=="sub").FirstOrDefault().Value;
+            var userId = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
             var order = await _orderService.getOrderById(oid);
             var uid = await _userService.getUidByEmail(order.userEmail);
-            if(userId != uid)
+            if (userId != uid)
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "It's not your order." });
             else
             {
-                var res = await _orderService.extendOrderDate(oid,time);
-                if(res == null)
+                var res = await _orderService.extendOrderDate(oid, time);
+                if (res == null)
                     return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "extend endDate failed" });
                 else
                     return StatusCode(StatusCodes.Status200OK);
             }
-            
+
         }
     }
 }
