@@ -63,7 +63,7 @@ namespace Sojourner.Services
 
         public async Task<List<Issue>> getUnFinishedIssueList()
         {
-            var query = await _issues.AsQueryable().OrderByDescending(o => o.createTime).ToListAsync();
+            var query = await _issues.AsQueryable().Where(Issue => Issue.isFinished == false).OrderByDescending(o => o.createTime).ToListAsync();
             return query;
         }
 
