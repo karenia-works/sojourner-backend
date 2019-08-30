@@ -13,6 +13,7 @@ namespace Sojourner.Services
     {
         private readonly IMongoCollection<Order> _orders;
         private readonly IMongoCollection<Order> _finishedOrders;
+        
         public OrderService(IDbSettings settings)
         {
             var client = new MongoClient(settings.DbConnection);
@@ -58,7 +59,6 @@ namespace Sojourner.Services
                 return null;
             else
                 return await query.FirstOrDefaultAsync();
-
         }
         public async Task<List<Order>> getAllOrder()
         {
@@ -140,5 +140,16 @@ namespace Sojourner.Services
             List<ExtendedOrder> list = await ordersView.ToListAsync();
             return list;
         }
+
+        public async Task<UpdateResult> extendOrderDate(string oid,DateTime time)
+        {
+            var flicker = Builders<Order>.Filter.Eq("id", oid);
+            var update = Builders<Order>.Update.Set("endDate", time);
+            var res = await _orders.UpdateOneAsync(flicker, update);
+            
+            return res;
+            
+        }
+
     }
 }

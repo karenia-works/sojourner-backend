@@ -24,7 +24,7 @@ namespace Sojourner.Services
             return query;
         }
 
-        public async ValueTask<string>  getUidByEmail(string email){
+        public async ValueTask<string> getUidByEmail(string email){
             var query = await _users.AsQueryable().
                 Where(u => u.username == email).FirstOrDefaultAsync();
             var tem = query.id;

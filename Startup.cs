@@ -54,6 +54,7 @@ namespace Sojourner
             services.AddSingleton<OrderService>();
             services.AddSingleton<UserService>();
             services.AddSingleton<HousesService>();
+            services.AddSingleton<IssueService>();
             services.AddSingleton<ImageService>();
             services.AddSingleton<ProfileService>();
             services.Configure<DbSettings>(Configuration.GetSection("DbSettings"));

@@ -84,6 +84,9 @@ namespace Sojourner.Controllers
         [HttpGet("sendWorker")]
         public async Task<IActionResult> sendWorker(string id, string workerId)
         {
+            var tmp = await _issueService.getIssueById(id);
+            if(tmp.wid != null)
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Already send worker" });
             var res = await _issueService.sendWorker(id, workerId);
 
             if (res == null)

@@ -43,7 +43,7 @@ namespace Sojourner.Controllers
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("me")]
-        public async Task<List<Order>> getOrderMe()
+        public async Task<List<Order>> getMyOrder()
         {
             var userId = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
             var user = await _userService.getUserId(userId);
@@ -143,6 +143,26 @@ namespace Sojourner.Controllers
             //     ok.ContentTypes.Clear();
             //     ok.ContentTypes.Add(MediaTypeNames.Application.Json);
             //     return ok;
+        }
+
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpPost("{oid:regex([[0-9a-fA-F]]{{24}})}/extendOrderDate")]
+        public async Task<IActionResult> extendOrderDate(string oid,DateTime time)
+        {
+            var userId=User.Claims.Where(claim=>claim.Type=="sub").FirstOrDefault().Value;
+            var order = await _orderService.getOrderById(oid);
+            var uid = await _userService.getUidByEmail(order.userEmail);
+            if(userId != uid)
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "It's not your order." });
+            else
+            {
+                var res = await _orderService.extendOrderDate(oid,time);
+                if(res == null)
+                    return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "extend endDate failed" });
+                else
+                    return StatusCode(StatusCodes.Status200OK);
+            }
+            
         }
     }
 }
