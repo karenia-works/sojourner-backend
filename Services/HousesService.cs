@@ -92,11 +92,17 @@ namespace Sojourner.Services
                         new BsonDocument(
                             "$not",
                             new BsonDocument("$elemMatch",
-                                new BsonDocument(
-                                new List<BsonElement>{
-                                    new BsonElement("startDate", new BsonDocument("$lt", endTime)),
-                                    new BsonElement("endDate", new BsonDocument("$gt", startTime))
-                                }
+                                new BsonDocument("$or",
+                                    new BsonArray(new[]{
+                                        new BsonDocument
+                                        {
+                                            {"endDate",new BsonDocument("$gt", startTime) }
+                                            {"startDate",new BsonDocument("$lt", endTime) }
+                                        },
+                                        new BsonDocument{
+                                            {"isLongRent", true}
+                                        }
+                                    })
                                 )
                             )
                         )
@@ -106,35 +112,35 @@ namespace Sojourner.Services
                 new BsonDocument("$skip", skip),
                 new BsonDocument("$limit", limit)
             };
-            var aggregate = _houses.Aggregate(
-                PipelineDefinition<House, House>.Create(
-                    stages
-                )
-            );
+        var aggregate = _houses.Aggregate(
+            PipelineDefinition<House, House>.Create(
+                stages
+            )
+        );
 
             return aggregate.ToListAsync();
         }
 
-        public async Task insertHouse(House tar)
-        {
-            await _houses.InsertOneAsync(tar);
-        }
-        public Task insertHouseManyAsync(List<House> tars)
-        {
-            return _houses.InsertManyAsync(tars);
-        }
-
-        public async Task<DeleteResult> deleteHouse(string id)
-        {
-            var res = await _houses.DeleteOneAsync(o => o.id == id);
-            return res;
-        }
-
-        public async Task<ReplaceOneResult> updateHouse(House tar)
-        {
-            var res = await _houses.ReplaceOneAsync(o => o.id == tar.id, tar);
-            return res;
-        }
-
+    public async Task insertHouse(House tar)
+    {
+        await _houses.InsertOneAsync(tar);
     }
+    public Task insertHouseManyAsync(List<House> tars)
+    {
+        return _houses.InsertManyAsync(tars);
+    }
+
+    public async Task<DeleteResult> deleteHouse(string id)
+    {
+        var res = await _houses.DeleteOneAsync(o => o.id == id);
+        return res;
+    }
+
+    public async Task<ReplaceOneResult> updateHouse(House tar)
+    {
+        var res = await _houses.ReplaceOneAsync(o => o.id == tar.id, tar);
+        return res;
+    }
+
+}
 }
