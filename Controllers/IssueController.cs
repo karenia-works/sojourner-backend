@@ -73,6 +73,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpPost]
         public async Task<IActionResult> insertIssue([FromBody] Issue issue)
         {
