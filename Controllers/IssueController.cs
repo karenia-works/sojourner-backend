@@ -64,6 +64,15 @@ namespace Sojourner.Controllers
             return res;
         }
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpGet("IssueList")]
+        public async Task<List<Issue>> getIssueList()
+        {
+            var res = await _issueService.getIssueList();
+            if (res == null)
+                NotFound();
+            return res;
+        }
+
         [HttpPost]
         public async Task<IActionResult> insertIssue([FromBody] Issue issue)
         {
@@ -100,16 +109,15 @@ namespace Sojourner.Controllers
 
         [Authorize("adminApi")]
         [HttpGet("unFinishedIssue")]
-        public async Task<IActionResult> getUnFinishedIssueList()
+        public async Task<List<Issue>> getUnFinishedIssueList(string wid)
         {
             var res = await _issueService.getUnFinishedIssueList();
             if (res == null)
-                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Get unfinished issue fail" });
-            else
-                return StatusCode(StatusCodes.Status200OK);
+                NotFound();
+            return res;
         }
 
-        [Authorize("worker")]
+        // [Authorize("worker")]
         [HttpGet("needRepairIssue")]
         public async Task<List<Issue>> getNeedRepairIssueList()
         {
@@ -120,7 +128,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [Authorize("worker")]
+        // [Authorize("worker")]
         [HttpGet("confirmFinish")]
         public async Task<IActionResult> confirmFinish(String id)
         {
