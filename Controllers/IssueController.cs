@@ -107,13 +107,12 @@ namespace Sojourner.Controllers
 
         [Authorize("adminApi")]
         [HttpGet("unFinishedIssue")]
-        public async Task<IActionResult> getUnFinishedIssueList()
+        public async Task<List<Issue>> getUnFinishedIssueList(string wid)
         {
             var res = await _issueService.getUnFinishedIssueList();
             if (res == null)
-                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Get unfinished issue fail" });
-            else
-                return StatusCode(StatusCodes.Status200OK);
+                NotFound();
+            return res;
         }
 
         [Authorize("worker")]
@@ -128,9 +127,9 @@ namespace Sojourner.Controllers
 
         [Authorize("worker")]
         [HttpGet("confirmFinish")]
-        public async Task<IActionResult> confirmFinish(Issue issue)
+        public async Task<IActionResult> confirmFinish(string wid)
         {
-            var res = await _issueService.confirmFinish(issue.id);
+            var res = await _issueService.confirmFinish(wid);
             return StatusCode(StatusCodes.Status200OK);
         }
 
