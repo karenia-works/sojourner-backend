@@ -4,6 +4,8 @@ using MongoDB.Driver;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Sojourner.Models;
+using System.Security.Claims;
+using System.Linq;
 using Sojourner.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
@@ -33,7 +35,7 @@ namespace Sojourner.Controllers
         //     }
         //     return res;
         // }
-
+        [Authorize("adminApi")]
         [HttpGet("{userName}")]
         public async Task<Profile> getProfileByUserName(string userName)
         {
@@ -81,11 +83,13 @@ namespace Sojourner.Controllers
         [HttpGet("allUserList/{role}")]
         public async Task<List<Profile>> getProfileList(string role)
         {
-            if(role == "all"){
+            if (role == "all")
+            {
                 var res = await _profileService.getProfileList();
-                 return res;
+                return res;
             }
-            else{
+            else
+            {
                 var res = await _profileService.getDirectProfileList(role);
                 return res;
             }
@@ -121,9 +125,10 @@ namespace Sojourner.Controllers
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
-        [HttpPut("{email}")]
-        public async Task<IActionResult> updateProfile(string email, [FromBody]Profile user_in)
+        [HttpPut()]
+        public async Task<IActionResult> updateProfile([FromBody]Profile user_in)
         {
+            var email = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
             if (email != user_in.email)
             {
                 return BadRequest(new { success = false, error = "user id do not match" });

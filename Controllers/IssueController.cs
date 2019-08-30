@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Sojourner.Services;
 using Sojourner.Models;
 using System.Linq;
+using IdentityServer4;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -43,8 +44,9 @@ namespace Sojourner.Controllers
 
         [Authorize()]
         [HttpGet("IssueByUid")]
-        public async Task<List<Issue>> getIssueListByUid(string uid)
+        public async Task<List<Issue>> getIssueListByUid()
         {
+            var uid = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
             var res = await _issueService.getIssueListByUid(uid);
             if (res == null)
                 NotFound();
@@ -53,14 +55,15 @@ namespace Sojourner.Controllers
 
         [Authorize("worker")]
         [HttpGet("IssueByWid")]
-        public async Task<List<Issue>> getIssueListByWid(string wid)
+        public async Task<List<Issue>> getIssueListByWid()
         {
+            var wid = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
             var res = await _issueService.getIssueListByWid(wid);
             if (res == null)
                 NotFound();
             return res;
         }
-
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpPost]
         public async Task<IActionResult> insertIssue([FromBody] Issue issue)
         {
@@ -73,7 +76,7 @@ namespace Sojourner.Controllers
         [HttpPut("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> replyToComplain(string id, [FromBody] Issue issue)
         {
-            var res = await _issueService.replyToComplain(issue.id, issue.reply,issue.needRepair);
+            var res = await _issueService.replyToComplain(issue.id, issue.reply, issue.needRepair);
             if (res == null)
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Reply is failed" });
             else
@@ -85,7 +88,7 @@ namespace Sojourner.Controllers
         public async Task<IActionResult> sendWorker(string id, string workerId)
         {
             var tmp = await _issueService.getIssueById(id);
-            if(tmp.wid != null)
+            if (tmp.wid != null)
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Already send worker" });
             var res = await _issueService.sendWorker(id, workerId);
 
@@ -108,19 +111,20 @@ namespace Sojourner.Controllers
 
         [Authorize("worker")]
         [HttpGet("needRepairIssue")]
-        public async Task<List<Issue>> getNeedRepairIssueList(string wid)
+        public async Task<List<Issue>> getNeedRepairIssueList()
         {
+            var wid = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
             var res = await _issueService.getNeedRepairIssueList(wid);
-            if(res == null)
+            if (res == null)
                 NotFound();
             return res;
         }
 
         [Authorize("worker")]
         [HttpGet("confirmFinish")]
-        public async Task<IActionResult> confirmFinish(Issue issue)
+        public async Task<IActionResult> confirmFinish(String id)
         {
-            var res = await _issueService.confirmFinish(issue.id);
+            var res = await _issueService.confirmFinish(id);
             return StatusCode(StatusCodes.Status200OK);
         }
 

@@ -47,10 +47,11 @@ namespace Sojourner.Controllers
             }
             return res;
         }
-
-        [HttpGet("{username}")]
-        public async Task<User> getUserByUserName(string userName)
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpGet()]
+        public async Task<User> getUserByUserName()
         {
+            var userName = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
             var res = await _userService.findClearUserName(userName);
             if (res == null)
             {
