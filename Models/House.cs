@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -7,9 +8,9 @@ namespace Sojourner.Models
 
     public class Address
     {
-        public string country;
-        public string city;
-        public string street;
+        public string country { get; set; };
+        public string city { get; set; };
+        public string street { get; set; };
     }
 
     public class House
