@@ -43,12 +43,12 @@ namespace Sojourner.Services
             await _issues.InsertOneAsync(tar);
             return true;
         }
-        public async Task<UpdateResult> replyToComplain(string iid, string reply,bool needRepair)
+        public async Task<UpdateResult> replyToComplain(string iid, string reply, bool needRepair)
         {
             var flicker = Builders<Issue>.Filter.Eq("id", iid);
             var update = Builders<Issue>.Update.Set("reply", reply).Set("isReplied", true);
-            if(needRepair != true)
-                update = Builders<Issue>.Update.Set("isFinished",true);
+            if (needRepair != true)
+                update = Builders<Issue>.Update.Set("isFinished", true);
             var res = await _issues.UpdateOneAsync(flicker, update);
 
             return res;
@@ -81,10 +81,30 @@ namespace Sojourner.Services
         public async Task<UpdateResult> confirmFinish(string iid)
         {
             var flicker = Builders<Issue>.Filter.Eq("id", iid);
-            var update = Builders<Issue>.Update.Set("isFinished",true);
+            var update = Builders<Issue>.Update.Set("isFinished", true);
             var res = await _issues.UpdateOneAsync(flicker, update);
 
             return res;
         }
+
+        /*
+        new BsonArray
+{
+    new BsonDocument("$lookup", 
+    new BsonDocument
+        {
+            { "from", "houses" }, 
+            { "localField", "hid" }, 
+            { "foreignField", "_id" }, 
+            { "as", "house" }
+        }),
+    new BsonDocument("$unwind", 
+    new BsonDocument
+        {
+            { "path", "$house" }, 
+            { "preserveNullAndEmptyArrays", true }
+        })
+}
+ */
     }
 }
