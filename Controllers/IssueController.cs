@@ -61,6 +61,16 @@ namespace Sojourner.Controllers
             return res;
         }
 
+        [Authorize()]
+        [HttpGet("IssueList")]
+        public async Task<List<Issue>> getIssueList()
+        {
+            var res = await _issueService.getIssueList();
+            if(res == null)
+                NotFound();
+            return res;
+        }
+
         [HttpPost]
         public async Task<IActionResult> insertIssue([FromBody] Issue issue)
         {
