@@ -42,7 +42,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [Authorize()]
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("IssueByUid")]
         public async Task<List<Issue>> getIssueListByUid()
         {
@@ -117,7 +117,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        // [Authorize("worker")]
+        [Authorize("workerApi")]
         [HttpGet("needRepairIssue")]
         public async Task<List<Issue>> getNeedRepairIssueList()
         {
@@ -128,7 +128,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        // [Authorize("worker")]
+        [Authorize("workerApi")]
         [HttpGet("confirmFinish")]
         public async Task<IActionResult> confirmFinish(String id)
         {

@@ -117,7 +117,7 @@ namespace Sojourner.Controllers
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
-        [HttpGet("{oid:regex([[0-9a-fA-F]]{{24}})}/setFinished")]
+        [HttpGet("setFinished/{oid:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<IActionResult> isFinishedChange(string oid)
         {
             var res = await _orderService.isFinishedChange(oid);
@@ -151,8 +151,8 @@ namespace Sojourner.Controllers
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
-        [HttpPost("{oid:regex([[0-9a-fA-F]]{{24}})}/extendOrderDate")]
-        public async Task<IActionResult> extendOrderDate(string oid, DateTime time)
+        [HttpPost("extendOrderDate/{oid:regex([[0-9a-fA-F]]{{24}})}")]
+        public async Task<IActionResult> extendOrderDate(string oid, [FromBody] DateTime time)
         {
             var userId = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
             var order = await _orderService.getOrderById(oid);
