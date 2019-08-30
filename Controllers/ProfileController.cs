@@ -45,12 +45,50 @@ namespace Sojourner.Controllers
             return res;
         }
 
+        // [Authorize("adminApi")]
+        // [HttpGet("allUserList")]
+        // public async Task<List<Profile>> getProfileList()
+        // {
+        //     var res = await _profileService.getProfileList();
+        //     return res;
+        // }
+
+        // [Authorize("adminApi")]
+        // [HttpGet("workerList")]
+        // public async Task<List<Profile>> getWorkerProfileList()
+        // {
+        //     var res = await _profileService.getWorkerProfileList();
+        //     return res;
+        // }
+
+        // [Authorize("adminApi")]
+        // [HttpGet("userList")]
+        // public async Task<List<Profile>> getUserProfileList()
+        // {
+        //     var res = await _profileService.getUserProfileList();
+        //     return res;
+        // }
+
+        // [Authorize("adminApi")]
+        // [HttpGet("adminList")]
+        // public async Task<List<Profile>> getAdminProfileList()
+        // {
+        //     var res = await _profileService.getUserProfileList();
+        //     return res;
+        // }
+
         [Authorize("adminApi")]
-        [HttpGet]
-        public async Task<List<Profile>> getProfileList()
+        [HttpGet("allUserList/{role}")]
+        public async Task<List<Profile>> getProfileList(string role)
         {
-            var res = await _profileService.getProfileList();
-            return res;
+            if(role == "all"){
+                var res = await _profileService.getProfileList();
+                 return res;
+            }
+            else{
+                var res = await _profileService.getDirectProfileList(role);
+                return res;
+            }
         }
 
         [Authorize("adminApi")]
