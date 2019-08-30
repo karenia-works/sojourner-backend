@@ -133,7 +133,7 @@ namespace Sojourner.Controllers
             }
         }
 
-        // [Authorize("adminApi")]
+        [Authorize("adminApi")]
         [HttpGet("orderView")]
         public async Task<IActionResult> adminOrderView(string kw = "")
         {
@@ -143,6 +143,16 @@ namespace Sojourner.Controllers
             //     ok.ContentTypes.Clear();
             //     ok.ContentTypes.Add(MediaTypeNames.Application.Json);
             //     return ok;
+        }
+
+        [Authorize("adminApi")]
+        [HttpGet("OrderList")]
+        public async Task<List<Order>> getOrderList()
+        {
+            var res = await _orderService.getOrderList();
+            if(res == null)
+                NotFound();
+            return res;
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
