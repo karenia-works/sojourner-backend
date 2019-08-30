@@ -177,7 +177,7 @@ namespace Sojourner.Services
                 new BsonDocument
                     {
                         {"house.name", new BsonRegularExpression(kw, "i")},
-                        {"order.userEmail",new BsonDocument("$eq",email)}
+                        {"userEmail", email}
                     }
                 )
             };
