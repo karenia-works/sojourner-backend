@@ -106,16 +106,16 @@ namespace Sojourner
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseCors(policy =>
+            {
+                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            });
 
             app.UseIdentityServer();
 
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseCors(policy =>
-            {
-                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-            });
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
