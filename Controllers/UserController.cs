@@ -36,6 +36,18 @@ namespace Sojourner.Controllers
             return Ok(new { user.id, user.username, user.role });
         }
 
+        [HttpGet("byEmail/{email}")]
+        [Authorize("adminApi")]
+        public async Task<User> getUserEmail(string email)
+        {
+            var res = await _userService.getUserEmail(email);
+            if (res == null)
+            {
+                NotFound();
+            }
+            return res;
+        }
+
         //object type: string
         [HttpGet("{id:regex([[0-9a-fA-F]]{{24}})}")]
         public async Task<User> getUserId(string id)

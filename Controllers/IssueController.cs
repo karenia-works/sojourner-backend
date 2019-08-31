@@ -1,3 +1,6 @@
+using System.Text;
+using System.Net.Mime;
+using System.Net.Http.Headers;
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Sojourner.Services;
@@ -11,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
 using MongoDB;
+using MongoDB.Bson;
 
 namespace Sojourner.Controllers
 {
@@ -59,9 +63,13 @@ namespace Sojourner.Controllers
         public async Task<List<Issue>> getIssueListByUid()
         {
             var uemail = User.Claims.Where(claim => claim.Type == "Name").FirstOrDefault().Value;
+            Console.WriteLine("100");
+            Console.WriteLine("101");
             var res = await _issueService.getIssueListByUid(uemail);
+            Console.WriteLine("102");
             if (res == null)
                 NotFound();
+            Console.WriteLine("103");
             return res;
         }
 
@@ -75,14 +83,20 @@ namespace Sojourner.Controllers
                 NotFound();
             return res;
         }
-        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [Authorize("adminApi")]
         [HttpGet("IssueList")]
-        public async Task<List<Issue>> getIssueList()
+        public async Task<IActionResult> getIssueList()
         {
+            Console.WriteLine("200");
             var res = await _issueService.getIssueList();
+            Console.WriteLine("220");
             if (res == null)
                 NotFound();
-            return res;
+            Console.WriteLine("250");
+            var result = new JsonResult(res);
+            Console.WriteLine("260");
+            // return Content(resultString, MediaTypeNames.Application.Json, Encoding.UTF8);
+            return result;
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
@@ -130,18 +144,21 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [Authorize("workerApi")]
+        // [Authorize("workerApi")]
         [HttpGet("needRepairIssue")]
         public async Task<List<Issue>> getNeedRepairIssueList()
         {
             var wemail = User.Claims.Where(claim => claim.Type == "Name").FirstOrDefault().Value;
+            Console.WriteLine("2");
             var res = await _issueService.getNeedRepairIssueList(wemail);
+            Console.WriteLine("3");
             if (res == null)
                 NotFound();
+            Console.WriteLine("4");
             return res;
         }
 
-        [Authorize("workerApi")]
+        // [Authorize("workerApi")]
         [HttpGet("confirmFinish")]
         public async Task<IActionResult> confirmFinish(String id)
         {

@@ -29,8 +29,10 @@ namespace Sojourner.Services
         }
         public async Task<List<Issue>> getIssueListByUid(string uemail)
         {
+            Console.WriteLine("104");
             var query = await _issues.AsQueryable().
                 Where(o => o.uemail == uemail).ToListAsync();
+            Console.WriteLine("105");
             return query;
         }
         public async Task<List<Issue>> getIssueListByWid(string wemail)
@@ -68,7 +70,9 @@ namespace Sojourner.Services
         }
         public async Task<List<Issue>> getIssueList()
         {
+            Console.WriteLine("252");
             var query = await _issues.AsQueryable().ToListAsync();
+            Console.WriteLine("253");
             return query;
         }
         public async Task<List<Issue>> getUnFinishedIssueList()
@@ -78,8 +82,10 @@ namespace Sojourner.Services
         }
         public async Task<List<Issue>> getNeedRepairIssueList(string wemail)
         {
+            Console.WriteLine("18");
             var query = await _issues.AsQueryable().
                 Where(o => o.wemail == wemail && o.needRepair == true).ToListAsync();
+            Console.WriteLine("17");
             return query;
         }
         public async Task<UpdateResult> confirmFinish(string iid)
