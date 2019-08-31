@@ -137,6 +137,21 @@ namespace Sojourner.Controllers
             return StatusCode(StatusCodes.Status200OK);
         }
 
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpDelete("{id:regex([[0-9a-fA-F]]{{24}})}")]
+        public async Task<IActionResult> deleteIssue(string id)
+        {
+            var tem = await _issueService.deleteIssue(id);
+            if (tem.DeletedCount != 1)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "delete issue error" });
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status200OK);
+            }
+        }
+
 
     }
 }

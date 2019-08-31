@@ -87,6 +87,12 @@ namespace Sojourner.Services
             return res;
         }
 
+        public async Task<DeleteResult> deleteIssue(string id)
+        {
+            var res = await _issues.DeleteOneAsync(i => i.id == id);
+            return res;
+        }
+
         /*
         new BsonArray
 {
