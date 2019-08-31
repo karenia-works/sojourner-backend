@@ -130,7 +130,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [Authorize("workerApi")]
+        // [Authorize("workerApi")]
         [HttpGet("needRepairIssue")]
         public async Task<List<Issue>> getNeedRepairIssueList()
         {
@@ -145,7 +145,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [Authorize("workerApi")]
+        // [Authorize("workerApi")]
         [HttpGet("confirmFinish")]
         public async Task<IActionResult> confirmFinish(String id)
         {
