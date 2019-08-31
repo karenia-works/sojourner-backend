@@ -139,7 +139,7 @@ namespace Sojourner.Controllers
         [HttpPut()]
         public async Task<IActionResult> updateProfile([FromBody]Profile user_in)
         {
-            var email = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
+            var email = User.Claims.Where(claim => claim.Type == "Name").FirstOrDefault().Value;
             if (email != user_in.email)
             {
                 return BadRequest(new { success = false, error = "user id do not match" });
