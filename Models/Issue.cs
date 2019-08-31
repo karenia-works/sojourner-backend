@@ -13,7 +13,6 @@ namespace Sojourner.Models
         public string wemail { get; set; }//维修师傅
         [BsonRepresentation(BsonType.ObjectId)]
         public string hid { get; set; }//房屋
-        [BsonRepresentation(BsonType.ObjectId)]
         public string[] img { get; set; }
         public string complaint { get; set; }
         public bool needRepair { get; set; }//是否需要报修
