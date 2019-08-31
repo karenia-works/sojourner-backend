@@ -14,6 +14,7 @@ namespace Sojourner.Services
     public class IssueService
     {
         private readonly IMongoCollection<Issue> _issues;
+        private readonly IMongoCollection<Profile> _profiles;
         public IssueService(IDbSettings settings)
         {
             var client = new MongoClient(settings.DbConnection);
@@ -58,6 +59,9 @@ namespace Sojourner.Services
         {
             var flicker = Builders<Issue>.Filter.Eq("id", iid);
             var update = Builders<Issue>.Update.Set("wemail", wemail);
+            var flicker2 = Builders<Profile>.Filter.Eq("email",wemail);
+            var update2 = Builders<Profile>.Update.Set("isRenting",true);
+            await _profiles.UpdateOneAsync(flicker2,update2); 
             var res = await _issues.UpdateOneAsync(flicker, update);
 
             return res;
