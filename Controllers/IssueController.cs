@@ -124,7 +124,7 @@ namespace Sojourner.Controllers
         public async Task<IActionResult> sendWorker(string id, string workEmail)
         {
             var tmp = await _issueService.getIssueById(id);
-            if (tmp.wemail != null)
+            if (tmp.wemail != "")
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Already send worker" });
             var res = await _issueService.sendWorker(id, workEmail);
 
