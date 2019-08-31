@@ -28,8 +28,10 @@ namespace Sojourner.Services
         }
         public async Task<List<Issue>> getIssueListByUid(string uemail)
         {
+            Console.WriteLine("104");
             var query = await _issues.AsQueryable().
                 Where(o => o.uemail == uemail).ToListAsync();
+            Console.WriteLine("105");
             return query;
         }
         public async Task<List<Issue>> getIssueListByWid(string wemail)
