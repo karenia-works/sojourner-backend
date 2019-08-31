@@ -134,10 +134,14 @@ namespace Sojourner.Controllers
         [HttpGet("needRepairIssue")]
         public async Task<List<Issue>> getNeedRepairIssueList()
         {
+            Console.WriteLine("1");
             var wemail = User.Claims.Where(claim => claim.Type == "Name").FirstOrDefault().Value;
+            Console.WriteLine("2");
             var res = await _issueService.getNeedRepairIssueList(wemail);
+            Console.WriteLine("3");
             if (res == null)
                 NotFound();
+            Console.WriteLine("4");
             return res;
         }
 
