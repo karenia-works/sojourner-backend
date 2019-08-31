@@ -58,8 +58,8 @@ namespace Sojourner.Controllers
         [HttpGet("IssueByUid")]
         public async Task<List<Issue>> getIssueListByUid()
         {
-            Console.WriteLine("100");
             var uemail = User.Claims.Where(claim => claim.Type == "Name").FirstOrDefault().Value;
+            Console.WriteLine("100");
             Console.WriteLine("101");
             var res = await _issueService.getIssueListByUid(uemail);
             Console.WriteLine("102");
@@ -83,9 +83,12 @@ namespace Sojourner.Controllers
         [HttpGet("IssueList")]
         public async Task<List<Issue>> getIssueList()
         {
+            Console.WriteLine("200");
             var res = await _issueService.getIssueList();
+            Console.WriteLine("220");
             if (res == null)
                 NotFound();
+            Console.WriteLine("250");
             return res;
         }
 

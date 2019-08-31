@@ -66,7 +66,9 @@ namespace Sojourner.Services
         }
         public async Task<List<Issue>> getIssueList()
         {
+            Console.WriteLine("252");
             var query = await _issues.AsQueryable().ToListAsync();
+            Console.WriteLine("253");
             return query;
         }
         public async Task<List<Issue>> getUnFinishedIssueList()
