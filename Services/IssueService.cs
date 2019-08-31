@@ -26,16 +26,16 @@ namespace Sojourner.Services
                 Where(o => o.id == id).FirstOrDefaultAsync();
             return query;
         }
-        public async Task<List<Issue>> getIssueListByUid(string uid)
+        public async Task<List<Issue>> getIssueListByUid(string uemail)
         {
             var query = await _issues.AsQueryable().
-                Where(o => o.uid == uid).ToListAsync();
+                Where(o => o.uemail == uemail).ToListAsync();
             return query;
         }
-        public async Task<List<Issue>> getIssueListByWid(string wid)
+        public async Task<List<Issue>> getIssueListByWid(string wemail)
         {
             var query = await _issues.AsQueryable().
-                Where(o => o.wid == wid).ToListAsync();
+                Where(o => o.wemail == wemail).ToListAsync();
             return query;
         }
         public async ValueTask<bool> insertIssue(Issue tar)
@@ -54,10 +54,10 @@ namespace Sojourner.Services
             return res;
         }
 
-        public async Task<UpdateResult> sendWorker(string iid, string wid)
+        public async Task<UpdateResult> sendWorker(string iid, string wemail)
         {
             var flicker = Builders<Issue>.Filter.Eq("id", iid);
-            var update = Builders<Issue>.Update.Set("wid", wid);
+            var update = Builders<Issue>.Update.Set("wemail", wemail);
             var res = await _issues.UpdateOneAsync(flicker, update);
 
             return res;
@@ -72,10 +72,10 @@ namespace Sojourner.Services
             var query = await _issues.AsQueryable().Where(Issue => Issue.isFinished == false).OrderByDescending(o => o.createTime).ToListAsync();
             return query;
         }
-        public async Task<List<Issue>> getNeedRepairIssueList(string wid)
+        public async Task<List<Issue>> getNeedRepairIssueList(string wemail)
         {
             var query = await _issues.AsQueryable().
-                Where(o => o.wid == wid && o.needRepair == true).ToListAsync();
+                Where(o => o.wemail == wemail && o.needRepair == true).ToListAsync();
             return query;
         }
         public async Task<UpdateResult> confirmFinish(string iid)

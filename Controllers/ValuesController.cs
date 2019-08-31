@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Sojourner.Services;
 using Sojourner.Models;
+using System.Net.Mail;
 using Microsoft.AspNetCore.Authorization;
 namespace Sojourner.Controllers
 {
@@ -24,6 +25,17 @@ namespace Sojourner.Controllers
         public ActionResult<IEnumerable<string>> test()
         {
 
+            var client = new SmtpClient();
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.Host = "smtp.163.com";
+            client.Credentials = new System.Net.NetworkCredential("liupangx", "lzx1573");
+            var Mail = new MailMessage("liupangx@163.com", "xinghuijun54@126.com");
+            Mail.Subject = "House warn";
+            Mail.Body = @"Hey man,
+        Your house's rent time less than 7 days, please came to our web and extend your order.";
+            Mail.BodyEncoding = System.Text.Encoding.UTF8;
+            Mail.IsBodyHtml = true;
+            client.Send(Mail);
             return new string[] { "value1", "value2", };
         }
         [Authorize(IdentityServer4.IdentityServerConstants.LocalApi.PolicyName)]

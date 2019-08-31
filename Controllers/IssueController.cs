@@ -46,8 +46,8 @@ namespace Sojourner.Controllers
         [HttpGet("IssueByUid")]
         public async Task<List<Issue>> getIssueListByUid()
         {
-            var uid = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
-            var res = await _issueService.getIssueListByUid(uid);
+            var uemail = User.Claims.Where(claim => claim.Type == "Name").FirstOrDefault().Value;
+            var res = await _issueService.getIssueListByUid(uemail);
             if (res == null)
                 NotFound();
             return res;
@@ -57,8 +57,8 @@ namespace Sojourner.Controllers
         [HttpGet("IssueByWid")]
         public async Task<List<Issue>> getIssueListByWid()
         {
-            var wid = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
-            var res = await _issueService.getIssueListByWid(wid);
+            var wemail = User.Claims.Where(claim => claim.Type == "Name").FirstOrDefault().Value;
+            var res = await _issueService.getIssueListByWid(wemail);
             if (res == null)
                 NotFound();
             return res;
@@ -95,12 +95,12 @@ namespace Sojourner.Controllers
 
         [Authorize("adminApi")]
         [HttpGet("sendWorker")]
-        public async Task<IActionResult> sendWorker(string id, string workerId)
+        public async Task<IActionResult> sendWorker(string id, string workEmail)
         {
             var tmp = await _issueService.getIssueById(id);
-            if (tmp.wid != null)
+            if (tmp.wemail != null)
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Already send worker" });
-            var res = await _issueService.sendWorker(id, workerId);
+            var res = await _issueService.sendWorker(id, workEmail);
 
             if (res == null)
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "Send worker fail" });
@@ -110,7 +110,7 @@ namespace Sojourner.Controllers
 
         [Authorize("adminApi")]
         [HttpGet("unFinishedIssue")]
-        public async Task<List<Issue>> getUnFinishedIssueList(string wid)
+        public async Task<List<Issue>> getUnFinishedIssueList()
         {
             var res = await _issueService.getUnFinishedIssueList();
             if (res == null)
@@ -122,8 +122,8 @@ namespace Sojourner.Controllers
         [HttpGet("needRepairIssue")]
         public async Task<List<Issue>> getNeedRepairIssueList()
         {
-            var wid = User.Claims.Where(claim => claim.Type == "sub").FirstOrDefault().Value;
-            var res = await _issueService.getNeedRepairIssueList(wid);
+            var wemail = User.Claims.Where(claim => claim.Type == "Name").FirstOrDefault().Value;
+            var res = await _issueService.getNeedRepairIssueList(wemail);
             if (res == null)
                 NotFound();
             return res;
