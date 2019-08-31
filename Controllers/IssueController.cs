@@ -93,10 +93,10 @@ namespace Sojourner.Controllers
             if (res == null)
                 NotFound();
             Console.WriteLine("250");
-            var resultString = res.ToJson();
+            var result = new JsonResult(res);
             Console.WriteLine("260");
-            return Content(resultString, MediaTypeNames.Application.Json, Encoding.UTF8);
-
+            // return Content(resultString, MediaTypeNames.Application.Json, Encoding.UTF8);
+            return result;
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
