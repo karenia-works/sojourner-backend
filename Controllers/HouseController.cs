@@ -101,7 +101,7 @@ namespace Sojourner.Controllers
                 return StatusCode(StatusCodes.Status204NoContent);
 
             var res = await _housesService.updateHouse(house);
-            if (res != null)
+            if (res == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new { success = false, error = "update error" });
             }
