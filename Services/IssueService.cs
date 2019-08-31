@@ -20,6 +20,7 @@ namespace Sojourner.Services
             var client = new MongoClient(settings.DbConnection);
             var database = client.GetDatabase(settings.DbName);
             _issues = database.GetCollection<Issue>(settings.IssueCollectionName);
+            _profiles = database.GetCollection<Profile>(settings.ProfileCollectionName);
         }
         public async Task<Issue> getIssueById(string id)
         {
