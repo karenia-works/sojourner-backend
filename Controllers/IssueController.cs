@@ -89,9 +89,9 @@ namespace Sojourner.Controllers
             if (res == null)
                 NotFound();
             Console.WriteLine("250");
-            var ok = Ok(res);
+            // var ok = Ok(res);
             Console.WriteLine("260");
-            return ok;
+            return Ok();
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
