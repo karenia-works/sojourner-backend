@@ -73,7 +73,7 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        [Authorize("worker")]
+        [Authorize("workerApi")]
         [HttpGet("IssueByWid")]
         public async Task<List<Issue>> getIssueListByWid()
         {
