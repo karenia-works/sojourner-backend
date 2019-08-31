@@ -1,3 +1,4 @@
+using System.Text;
 using System.Net.Mime;
 using System.Net.Http.Headers;
 using System;
@@ -94,7 +95,7 @@ namespace Sojourner.Controllers
             Console.WriteLine("250");
             var resultString = res.ToJson();
             Console.WriteLine("260");
-            return Content(resultString, MediaTypeNames.Application.Json);
+            return Content(resultString, MediaTypeNames.Application.Json, Encoding.UTF8);
 
         }
 
