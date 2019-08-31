@@ -81,7 +81,7 @@ namespace Sojourner.Controllers
         }
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("IssueList")]
-        public async Task<List<Issue>> getIssueList()
+        public async Task<IActionResult> getIssueList()
         {
             Console.WriteLine("200");
             var res = await _issueService.getIssueList();
@@ -89,7 +89,9 @@ namespace Sojourner.Controllers
             if (res == null)
                 NotFound();
             Console.WriteLine("250");
-            return res;
+            var ok = Ok(res);
+            Console.WriteLine("260");
+            return ok;
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
