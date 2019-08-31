@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
 using MongoDB;
+using MongoDB.Bson;
 
 namespace Sojourner.Controllers
 {
@@ -89,9 +90,10 @@ namespace Sojourner.Controllers
             if (res == null)
                 NotFound();
             Console.WriteLine("250");
-            // var ok = Ok(res);
+            var resultString = res.ToJson();
             Console.WriteLine("260");
-            return Ok();
+            return Content(resultString);
+
         }
 
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
