@@ -50,11 +50,17 @@ namespace Sojourner.Controllers
         [HttpGet()]
         public async Task<List<House>> searchHouses(
             string kw = "", string roomType = "single double quad", string startTime = "2099-1-1",
-            bool includeLongRent = true, bool includeShortRent = true,
+            bool? useLongRent = null,
             string endTime = "2099-12-31", int limit = 20, int skip = 0)
         {
             var _startTime = DateTime.Parse(startTime);
             var _endTime = DateTime.Parse(endTime);
+
+            if (kw == ":all") kw = "";
+
+            var includeShortRent = useLongRent == false || useLongRent == null;
+            var includeLongRent = useLongRent == true || useLongRent == null;
+
             if (roomType == null) roomType = "single double quad";
             var res = await _housesService.searchForHouse(
                 _startTime,
