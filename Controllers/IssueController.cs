@@ -41,7 +41,19 @@ namespace Sojourner.Controllers
             }
             return res;
         }
+        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [HttpGet("me/{id:regex([[0-9a-fA-F]]{{24}})}")]
 
+        public async Task<Issue> getIssueByIdUser(string id)
+        {
+            var user = User.Claims.Where(claim => claim.Type == "Name").FirstOrDefault().Value;
+            var res = await _issueService.getIssueById(id);
+            if (res == null || res.uemail != user)
+            {
+                NotFound();
+            }
+            return res;
+        }
         [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
         [HttpGet("IssueByUid")]
         public async Task<List<Issue>> getIssueListByUid()
