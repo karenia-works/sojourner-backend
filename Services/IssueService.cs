@@ -39,7 +39,7 @@ namespace Sojourner.Services
         public async Task<List<Issue>> getIssueListByWid(string wemail)
         {
             var query = await _issues.AsQueryable().
-                Where(o => o.wemail == wemail&&o.isReplied==false).ToListAsync();
+                Where(o => o.wemail == wemail&&o.isFinished==false).ToListAsync();
             return query;
         }
         public async ValueTask<bool> insertIssue(Issue tar)
@@ -72,7 +72,7 @@ namespace Sojourner.Services
         public async Task<List<Issue>> getIssueList()
         {
             Console.WriteLine("252");
-            var query = await _issues.AsQueryable().Where(Issue=>Issue.isReplied==false).ToListAsync();
+            var query = await _issues.AsQueryable().ToListAsync();
             Console.WriteLine("253");
             return query;
         }
