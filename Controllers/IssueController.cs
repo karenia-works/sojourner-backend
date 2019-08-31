@@ -1,3 +1,5 @@
+using System.Net.Mime;
+using System.Net.Http.Headers;
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Sojourner.Services;
@@ -92,7 +94,7 @@ namespace Sojourner.Controllers
             Console.WriteLine("250");
             var resultString = res.ToJson();
             Console.WriteLine("260");
-            return Content(resultString);
+            return Content(resultString, MediaTypeNames.Application.Json);
 
         }
 
