@@ -39,7 +39,7 @@ namespace Sojourner.Services
         public async Task<List<Issue>> getIssueListByWid(string wemail)
         {
             var query = await _issues.AsQueryable().
-                Where(o => o.wemail == wemail).ToListAsync();
+                Where(o => o.wemail == wemail&&o.isReplied==false).ToListAsync();
             return query;
         }
         public async ValueTask<bool> insertIssue(Issue tar)
@@ -72,7 +72,7 @@ namespace Sojourner.Services
         public async Task<List<Issue>> getIssueList()
         {
             Console.WriteLine("252");
-            var query = await _issues.AsQueryable().ToListAsync();
+            var query = await _issues.AsQueryable().Where(Issue=>Issue.isReplied==false).ToListAsync();
             Console.WriteLine("253");
             return query;
         }
@@ -89,10 +89,13 @@ namespace Sojourner.Services
             Console.WriteLine("17");
             return query;
         }
-        public async Task<UpdateResult> confirmFinish(string iid)
+        public async Task<UpdateResult> confirmFinish(string wemail,string iid)
         {
             var flicker = Builders<Issue>.Filter.Eq("id", iid);
+            var flicker2=Builders<Profile>.Filter.Eq("email",wemail);
             var update = Builders<Issue>.Update.Set("isFinished", true);
+            var update2=Builders<Profile>.Update.Set("isRenting",false);
+            await _profiles.UpdateOneAsync(flicker2,update2);
             var res = await _issues.UpdateOneAsync(flicker, update);
 
             return res;

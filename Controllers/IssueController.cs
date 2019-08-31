@@ -158,11 +158,12 @@ namespace Sojourner.Controllers
             return res;
         }
 
-        // [Authorize("workerApi")]
+        [Authorize("workerApi")]
         [HttpGet("confirmFinish")]
         public async Task<IActionResult> confirmFinish(String id)
         {
-            var res = await _issueService.confirmFinish(id);
+            var wemail=User.Claims.Where(claim=>claim.Type=="Name").FirstOrDefault().Value;
+            var res = await _issueService.confirmFinish(wemail,id);
             return StatusCode(StatusCodes.Status200OK);
         }
 
