@@ -75,7 +75,7 @@ namespace Sojourner.Controllers
                 NotFound();
             return res;
         }
-        [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+        [Authorize("adminApi")]
         [HttpGet("IssueList")]
         public async Task<List<Issue>> getIssueList()
         {
