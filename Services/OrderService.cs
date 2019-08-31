@@ -68,7 +68,6 @@ namespace Sojourner.Services
         public async ValueTask<bool> insertOrder(Order tar)
         {
             //可能有问题 太迟了查了也查不到
-            tar.endDate = tar.startDate.AddDays(7);
             tar.isFinished = false;
             tar.cancelDate = tar.createDate.AddDays(7);
             tar.ddlDate = tar.startDate.AddMonths(1);
